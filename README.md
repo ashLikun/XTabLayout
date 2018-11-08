@@ -17,7 +17,7 @@ allprojects {
 
 ```gradle
 dependencies {
-    implementation 'com.github.ashLikun:XTabLayout:{latest version}'//XViewPager
+    implementation 'com.github.ashLikun:XTabLayout:{latest version}'
 }
 ```
 ### 1.用法
