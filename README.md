@@ -18,6 +18,12 @@ allprojects {
 ```gradle
 dependencies {
     implementation 'com.github.ashLikun:XTabLayout:{latest version}'
+    
+    //如果不使用内部的Android  designVersion（27.1.1） 可以这样
+    implementation ('com.github.ashLikun:XTabLayout:{latest version}'){
+        exclude group: 'com.android.support'
+    }
+     
 }
 ```
 ### 1.用法
