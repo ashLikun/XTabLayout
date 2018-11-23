@@ -16,6 +16,7 @@
 
 package com.ashlikun.xtablayout;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.TabLayout;
@@ -32,7 +33,6 @@ import android.view.View;
  * @attr ref android.support.design.R.styleable#TabItem_android_icon
  * @attr ref android.support.design.R.styleable#TabItem_android_text
  * @attr ref android.support.design.R.styleable#TabItem_android_layout
- *
  * @see TabLayout
  */
 public final class TabItem extends View {
