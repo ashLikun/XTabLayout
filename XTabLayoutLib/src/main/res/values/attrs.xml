@@ -25,10 +25,10 @@
         <attr name="xTabMinWidth" format="dimension" />
         <!--最大宽度-->
         <attr name="xTabMaxWidth" format="dimension" />
-        <!--背景色-->
-        <attr name="xTabBackgroundColor" format="reference|color" />
-        <!--选中的背景色-->
-        <attr name="xTabSelectedBackgroundColor" format="reference|color" />
+        <!--item背景色-->
+        <attr name="xTabItemBackground" format="reference|color" />
+        <!--item选中的背景色-->
+        <attr name="xTabItemSelectedBackground" format="reference|color" />
         <!--内容前面边距-->
         <attr name="xTabContentStart" format="dimension" />
         <!--排版模式-->

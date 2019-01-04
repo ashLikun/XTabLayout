@@ -77,11 +77,6 @@ public class XTabLayout extends HorizontalScrollView {
     private static final int DEFAULT_HEIGHT = 48;
     private static final int TAB_MIN_WIDTH_MARGIN = 56;
     private static final int FIXED_WRAP_GUTTER_MIN = 16;
-    /**
-     * 当Tab被选中时文本长度大于等于Tab的宽度时
-     * Tab会另外增加SELECT_TAB_SELECTED_ADD_WIDTH的长度
-     */
-    private static final int SELECTED_TAB_ADD_WIDTH = 20;
     private static final int MOTION_NON_ADJACENT_OFFSET = 24;
 
     private static final int ANIMATION_DURATION = 300;
@@ -202,8 +197,8 @@ public class XTabLayout extends HorizontalScrollView {
     private boolean xTabTextSelectedBold;
     private float mTabTextMultiLineSize;
 
-    private final int xTabBackgroundColor;
-    private final int xTabSelectedBackgroundColor;
+    private Drawable xTabItemBackground = null;
+    private Drawable xTabItemSelectedBackground = null;
 
     private int mTabMaxWidth = Integer.MAX_VALUE;
     private final int mRequestedTabMinWidth;
@@ -220,10 +215,6 @@ public class XTabLayout extends HorizontalScrollView {
     private int dividerHeight;
     private int dividerColor;
     private int dividerGravity;
-    /**
-     * AUTO模式防止多次设置布局
-     */
-    private boolean onMeasureAutoSetLayout = false;
 
 
     private OnTabSelectedListener mSelectedListener;
@@ -237,6 +228,8 @@ public class XTabLayout extends HorizontalScrollView {
     private DataSetObserver mPagerAdapterObserver;
     private TabLayoutOnPageChangeListener mPageChangeListener;
     private AdapterChangeListener mAdapterChangeListener;
+    //是否布局完成
+    private boolean onLayoutOk = false;
 
     /**
      * 我们使用池作为一个简单的回收桶
@@ -269,7 +262,7 @@ public class XTabLayout extends HorizontalScrollView {
 
         mTabStrip.setSelectedIndicatorHeight(
                 a.getDimensionPixelSize(R.styleable.XTabLayout_xTabIndicatorHeight, dpToPx(2)));
-        mTabStrip.setmSelectedIndicatorWidth(
+        mTabStrip.setSelectedIndicatorWidth(
                 a.getDimensionPixelSize(R.styleable.XTabLayout_xTabIndicatorWidth, 0));
         mTabStrip.setSelectedIndicatorColor(a.getColor(R.styleable.XTabLayout_xTabIndicatorColor, 0));
 
@@ -324,8 +317,12 @@ public class XTabLayout extends HorizontalScrollView {
                 INVALID_WIDTH);
         mRequestedTabMaxWidth = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabMaxWidth,
                 INVALID_WIDTH);
-        xTabBackgroundColor = a.getColor(R.styleable.XTabLayout_xTabBackgroundColor, 0);
-        xTabSelectedBackgroundColor = a.getColor(R.styleable.XTabLayout_xTabSelectedBackgroundColor, 0);
+        if (a.hasValue(R.styleable.XTabLayout_xTabItemBackground)) {
+            xTabItemBackground = a.getDrawable(R.styleable.XTabLayout_xTabItemBackground);
+        }
+        if (a.hasValue(R.styleable.XTabLayout_xTabItemSelectedBackground)) {
+            xTabItemSelectedBackground = a.getDrawable(R.styleable.XTabLayout_xTabItemSelectedBackground);
+        }
 
         mContentInsetStart = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabContentStart, 0);
         mMode = a.getInt(R.styleable.XTabLayout_xTabMode, MODE_AUTO);
@@ -346,7 +343,6 @@ public class XTabLayout extends HorizontalScrollView {
         mScrollableTabMinWidth = res.getDimensionPixelSize(android.support.design.R.dimen.design_tab_scrollable_min_width);
 
         // Now apply the tab mode and gravity
-        onMeasureAutoSetLayout = false;
         applyModeAndGravity(true);
 
         //添加分割线
@@ -401,6 +397,27 @@ public class XTabLayout extends HorizontalScrollView {
         dividerGravity = gravity;
         addDivider();
 
+    }
+
+    /**
+     * 设置当前的位置
+     *
+     * @param position
+     */
+    public void setCurrentTabPosition(final int position) {
+        if (position >= 0 && position < getTabCount()) {
+            if (onLayoutOk) {
+                selectTab(getTabAt(position), true);
+            } else {
+                postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setCurrentTabPosition(position);
+                    }
+                }, 50);
+            }
+
+        }
     }
 
     /**
@@ -509,7 +526,10 @@ public class XTabLayout extends HorizontalScrollView {
         if (tab.mParent != this) {
             throw new IllegalArgumentException("Tab belongs to a different TabLayout.");
         }
-
+        if (mTabs.isEmpty()) {
+            //没有tab就设置tabposition为0
+            tab.setPosition(0);
+        }
         addTabView(tab, setSelected);
         configureTab(tab, mTabs.size());
         if (setSelected) {
@@ -548,6 +568,35 @@ public class XTabLayout extends HorizontalScrollView {
             tab.setCustomView(item.mCustomLayout);
         }
         addTab(tab);
+    }
+
+    public void setTabItemBackground(Drawable tabItemBackground) {
+        if (this.xTabItemBackground == tabItemBackground) {
+            return;
+        }
+        this.xTabItemBackground = tabItemBackground;
+        if (mSelectedTab != null) {
+            selectTab(mSelectedTab);
+        }
+    }
+
+    /**
+     * 获取指示器
+     *
+     * @return
+     */
+    public SlidingTabStrip getIndicator() {
+        return mTabStrip;
+    }
+
+    public void setTabItemSelectedBackground(Drawable tabItemSelectedBackground) {
+        if (this.xTabItemSelectedBackground == tabItemSelectedBackground) {
+            return;
+        }
+        this.xTabItemSelectedBackground = tabItemSelectedBackground;
+        if (mSelectedTab != null) {
+            selectTab(mSelectedTab);
+        }
     }
 
     /**
@@ -714,7 +763,6 @@ public class XTabLayout extends HorizontalScrollView {
     public void setTabMode(@TabLayout.Mode int mode) {
         if (mode != mMode) {
             mMode = mode;
-            onMeasureAutoSetLayout = false;
             applyModeAndGravity(true);
         }
     }
@@ -738,7 +786,6 @@ public class XTabLayout extends HorizontalScrollView {
     public void setTabGravity(@TabLayout.TabGravity int gravity) {
         if (mTabGravity != gravity) {
             mTabGravity = gravity;
-            onMeasureAutoSetLayout = false;
             applyModeAndGravity(true);
         }
     }
@@ -1017,6 +1064,11 @@ public class XTabLayout extends HorizontalScrollView {
         return Math.round(getResources().getDisplayMetrics().density * dps);
     }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        onLayoutOk = true;
+    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -1167,7 +1219,7 @@ public class XTabLayout extends HorizontalScrollView {
                 if (newPosition != Tab.INVALID_POSITION) {
                     setSelectedTabView(newPosition);
                 }
-                if ((mSelectedTab == null || mSelectedTab.getPosition() == Tab.INVALID_POSITION)
+                if (!onLayoutOk || (mSelectedTab == null || mSelectedTab.getPosition() == Tab.INVALID_POSITION)
                         && newPosition != Tab.INVALID_POSITION) {
                     // If we don't currently have a tab, just draw the indicator
                     setScrollPosition(newPosition, 0f, true);
@@ -1175,18 +1227,22 @@ public class XTabLayout extends HorizontalScrollView {
                     animateToTab(newPosition);
                 }
             }
-            if (mSelectedTab != null && mSelectedListener != null) {
-                mSelectedListener.onTabUnselected(mSelectedTab);
-            }
-            for (OnTabSelectedListener onTabSelectedListener : mSelectedListeners) {
-                onTabSelectedListener.onTabUnselected(mSelectedTab);
+            if (mSelectedTab != null && mSelectedTab.getPosition() != Tab.INVALID_POSITION) {
+                if (mSelectedListener != null) {
+                    mSelectedListener.onTabUnselected(mSelectedTab);
+                }
+                for (OnTabSelectedListener onTabSelectedListener : mSelectedListeners) {
+                    onTabSelectedListener.onTabUnselected(mSelectedTab);
+                }
             }
             mSelectedTab = tab;
-            if (mSelectedTab != null && mSelectedListener != null) {
-                mSelectedListener.onTabSelected(mSelectedTab);
-            }
-            for (OnTabSelectedListener onTabSelectedListener : mSelectedListeners) {
-                onTabSelectedListener.onTabSelected(mSelectedTab);
+            if (mSelectedTab != null && mSelectedTab.getPosition() != Tab.INVALID_POSITION) {
+                if (mSelectedListener != null) {
+                    mSelectedListener.onTabSelected(mSelectedTab);
+                }
+                for (OnTabSelectedListener onTabSelectedListener : mSelectedListeners) {
+                    onTabSelectedListener.onTabSelected(mSelectedTab);
+                }
             }
         }
     }
@@ -1571,8 +1627,8 @@ public class XTabLayout extends HorizontalScrollView {
             final boolean changed = (isSelected() != selected);
             super.setSelected(selected);
             if (!selected) {
-                if (xTabBackgroundColor != 0) {
-                    setBackgroundColor(xTabBackgroundColor);
+                if (xTabItemBackground != null) {
+                    setBackground(xTabItemBackground);
                 }
                 mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabTextSize);
                 if (xTabTextBold) {
@@ -1582,8 +1638,8 @@ public class XTabLayout extends HorizontalScrollView {
                 }
             }
             if (changed && selected) {
-                if (xTabSelectedBackgroundColor != 0) {
-                    setBackgroundColor(xTabSelectedBackgroundColor);
+                if (xTabItemSelectedBackground != null) {
+                    setBackground(xTabItemSelectedBackground);
                 }
                 sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
 
@@ -1856,7 +1912,7 @@ public class XTabLayout extends HorizontalScrollView {
         }
     }
 
-    private class SlidingTabStrip extends LinearLayout {
+    public class SlidingTabStrip extends LinearLayout {
         private int mSelectedIndicatorHeight;
         private int mSelectedIndicatorWidth;
         private final Paint mSelectedIndicatorPaint;
@@ -1875,21 +1931,21 @@ public class XTabLayout extends HorizontalScrollView {
             mSelectedIndicatorPaint = new Paint();
         }
 
-        void setSelectedIndicatorColor(int color) {
+        public void setSelectedIndicatorColor(int color) {
             if (mSelectedIndicatorPaint.getColor() != color) {
                 mSelectedIndicatorPaint.setColor(color);
                 ViewCompat.postInvalidateOnAnimation(this);
             }
         }
 
-        void setSelectedIndicatorHeight(int height) {
+        public void setSelectedIndicatorHeight(int height) {
             if (mSelectedIndicatorHeight != height) {
                 mSelectedIndicatorHeight = height;
                 ViewCompat.postInvalidateOnAnimation(this);
             }
         }
 
-        void setmSelectedIndicatorWidth(int width) {
+        public void setSelectedIndicatorWidth(int width) {
             if (mSelectedIndicatorWidth != width) {
                 mSelectedIndicatorWidth = width;
                 ViewCompat.postInvalidateOnAnimation(this);
@@ -1897,7 +1953,7 @@ public class XTabLayout extends HorizontalScrollView {
             }
         }
 
-        public int getmSelectedIndicatorWidth() {
+        public int getSelectedIndicatorWidth() {
             return mSelectedIndicatorWidth;
         }
 
@@ -1911,7 +1967,7 @@ public class XTabLayout extends HorizontalScrollView {
             return false;
         }
 
-        void setIndicatorPositionFromTabPosition(int position, float positionOffset) {
+        public void setIndicatorPositionFromTabPosition(int position, float positionOffset) {
             if (mIndicatorAnimator != null && mIndicatorAnimator.isRunning()) {
                 mIndicatorAnimator.cancel();
             }
@@ -1921,7 +1977,7 @@ public class XTabLayout extends HorizontalScrollView {
             updateIndicatorPosition();
         }
 
-        float getIndicatorPosition() {
+        public float getIndicatorPosition() {
             return mSelectedPosition + mSelectionOffset;
         }
 
@@ -2041,7 +2097,7 @@ public class XTabLayout extends HorizontalScrollView {
             }
         }
 
-        private void updateIndicatorPosition() {
+        public void updateIndicatorPosition() {
             final View selectedTitle = getChildAt(mSelectedPosition);
             int left, right;
             if (selectedTitle != null && selectedTitle.getWidth() > 0) {

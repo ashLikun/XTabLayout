@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.ashlikun.xtablayout.simple.MainActivity">
 
     <Button
@@ -12,5 +13,23 @@
         android:onClick="onClick"
         android:text="测试" />
 
+    <com.ashlikun.xtablayout.XTabLayout
+        android:id="@+id/xTablayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#888888"
+        app:xTabDividerColor="#000"
+        app:xTabDividerHeight="15dp"
+        app:xTabDividerWidth="0dp"
+        app:xTabIndicatorColor="#0f0"
+        app:xTabIndicatorHeight="2dp"
+        app:xTabIndicatorWidth="10dp"
+        app:xTabItemBackground="#00000000"
+        app:xTabItemSelectedBackground="@drawable/aaaaaaaaa"
+        app:xTabMode="auto"
+        app:xTabSelectedTextColor="#f00"
+        app:xTabSelectedTextSize="20sp"
+        app:xTabTextColor="#000"
+        app:xTabTextSize="15sp" />
 
 </LinearLayout>
