@@ -1627,9 +1627,7 @@ public class XTabLayout extends HorizontalScrollView {
             final boolean changed = (isSelected() != selected);
             super.setSelected(selected);
             if (!selected) {
-                if (xTabItemBackground != null) {
-                    setBackground(xTabItemBackground);
-                }
+                setBackground(xTabItemBackground);
                 mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabTextSize);
                 if (xTabTextBold) {
                     mTextView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
@@ -1638,9 +1636,7 @@ public class XTabLayout extends HorizontalScrollView {
                 }
             }
             if (changed && selected) {
-                if (xTabItemSelectedBackground != null) {
-                    setBackground(xTabItemSelectedBackground);
-                }
+                setBackground(xTabItemSelectedBackground);
                 sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
 
                 if (mTextView != null) {
