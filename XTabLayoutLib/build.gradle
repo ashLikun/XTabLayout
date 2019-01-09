@@ -31,8 +31,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    compileOnly rootProject.ext.designVersion
-    implementation 'com.android.support:support-annotations:' + superVersion
+    implementation rootProject.ext.designVersion
 }
 
 apply from: '../maven.gradle'
