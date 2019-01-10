@@ -1691,9 +1691,6 @@ public class XTabLayout extends HorizontalScrollView {
                 // Else, use the original width spec
                 widthMeasureSpec = origWidthMeasureSpec;
             }
-            if (mTabSelectedTextSize != 0) {
-                mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabSelectedTextSize);
-            }
             // Now lets measure
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
@@ -1737,15 +1734,12 @@ public class XTabLayout extends HorizontalScrollView {
                         } else {
                             mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabTextSize);
                         }
-//                        mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
                         mTextView.setMaxLines(maxLines);
                         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
                     }
                 }
             }
-            if (mTabSelectedTextSize != 0) {
-                mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabTextSize);
-            }
+
         }
 
         private void setTab(@Nullable final Tab tab) {
@@ -1810,6 +1804,7 @@ public class XTabLayout extends HorizontalScrollView {
                     mTextView = textView;
                     mDefaultMaxLines = TextViewCompat.getMaxLines(mTextView);
                 }
+                mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabTextSize);
                 mTextView.setTextAppearance(getContext(), mTabTextAppearance);
                 if (mTabTextColors != null) {
                     mTextView.setTextColor(mTabTextColors);

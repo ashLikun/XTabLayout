@@ -31,7 +31,7 @@ public class MainActivity2 extends AppCompatActivity implements XTabLayout.OnTab
         for (int i = 0; i < 10; i++) {
             tabLayout.addTab(tabLayout.newTab().setText("我是第" + i));
         }
-        tabLayout.setCurrentTabPosition(6);
+       // tabLayout.setCurrentTabPosition(6);
     }
 
     @Override

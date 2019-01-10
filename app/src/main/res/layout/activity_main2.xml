@@ -28,8 +28,8 @@
         app:xTabItemSelectedBackground="@drawable/aaaaaaaaa"
         app:xTabMode="auto"
         app:xTabSelectedTextColor="#f00"
-        app:xTabSelectedTextSize="20sp"
+        app:xTabSelectedTextSize="25sp"
         app:xTabTextColor="#000"
-        app:xTabTextSize="15sp" />
+        app:xTabTextSize="12dp" />
 
 </LinearLayout>
