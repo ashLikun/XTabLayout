@@ -25,9 +25,12 @@ public class MainActivity2 extends AppCompatActivity implements XTabLayout.OnTab
         titles.add("第二第二");
         titles.add("第三");
         final XTabLayout tabLayout = findViewById(R.id.xTablayout);
+        final XTabLayout tabLayout2 = findViewById(R.id.tabLayout2);
         tabLayout.addOnTabSelectedListener(this);
         //将TabLayout和ViewPager关联起来。
-
+        tabLayout2.addTab(tabLayout2.newTab().setText("商品"));
+        tabLayout2.addTab(tabLayout2.newTab().setText("详情"));
+        tabLayout2.addTab(tabLayout2.newTab().setText("评价"));
         for (int i = 0; i < 3; i++) {
             tabLayout.addTab(tabLayout.newTab().setText("我是第" + i));
         }

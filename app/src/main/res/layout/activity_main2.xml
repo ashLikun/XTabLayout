@@ -30,6 +30,17 @@
         app:xTabSelectedTextColor="#f00"
         app:xTabSelectedTextSize="25sp"
         app:xTabTextColor="#000"
-        app:xTabTextSize="12dp" />
+        app:xTabTextSize="18dp" />
 
+    <com.ashlikun.xtablayout.XTabLayout
+        android:id="@+id/tabLayout2"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        app:xTabIndicatorColor="#ff4c4d"
+        app:xTabIndicatorHeight="2dp"
+        app:xTabIndicatorWidthWidthText="true"
+        app:xTabMode="fixed"
+        app:xTabTextColor="#000000"
+        app:xTabTextSize="18dp" />
 </LinearLayout>
