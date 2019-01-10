@@ -1644,11 +1644,11 @@ public class XTabLayout extends HorizontalScrollView {
 
                     if (mTabSelectedTextSize != 0) {
                         mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabSelectedTextSize);
-                        if (xTabTextSelectedBold) {
-                            mTextView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                        } else {
-                            mTextView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
-                        }
+                    }
+                    if (xTabTextSelectedBold) {
+                        mTextView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                    } else {
+                        mTextView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
                     }
                 }
                 if (mIconView != null) {
@@ -1696,7 +1696,6 @@ public class XTabLayout extends HorizontalScrollView {
 
             // We need to switch the text size based on whether the text is spanning 2 lines or not
             if (mTextView != null) {
-                final Resources res = getResources();
                 float textSize = mTabTextSize;
                 int maxLines = mDefaultMaxLines;
 
@@ -1734,12 +1733,16 @@ public class XTabLayout extends HorizontalScrollView {
                         } else {
                             mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabTextSize);
                         }
+                        if (mTextView.isSelected() && xTabTextSelectedBold) {
+                            mTextView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                        } else {
+                            mTextView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+                        }
                         mTextView.setMaxLines(maxLines);
                         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
                     }
                 }
             }
-
         }
 
         private void setTab(@Nullable final Tab tab) {
@@ -1804,7 +1807,16 @@ public class XTabLayout extends HorizontalScrollView {
                     mTextView = textView;
                     mDefaultMaxLines = TextViewCompat.getMaxLines(mTextView);
                 }
-                mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabTextSize);
+                if (mTextView.isSelected() && mTabSelectedTextSize != 0) {
+                    mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabSelectedTextSize);
+                } else {
+                    mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabTextSize);
+                }
+                if (mTextView.isSelected() && xTabTextSelectedBold) {
+                    mTextView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                } else {
+                    mTextView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+                }
                 mTextView.setTextAppearance(getContext(), mTabTextAppearance);
                 if (mTabTextColors != null) {
                     mTextView.setTextColor(mTabTextColors);
