@@ -538,8 +538,6 @@ public class XTabLayout extends HorizontalScrollView {
         configureTab(tab, mTabs.size());
         if (setSelected) {
             tab.select();
-        } else {
-            tab.updateView();
         }
     }
 
