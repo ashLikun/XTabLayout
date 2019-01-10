@@ -1000,9 +1000,7 @@ public class XTabLayout extends HorizontalScrollView {
         final TabView tabView = tab.mView;
 
         mTabStrip.addView(tabView, createLayoutParamsForTabs());
-        if (setSelected) {
-            tabView.setSelected(true);
-        }
+        tabView.setSelected(setSelected);
     }
 
     private void addTabView(Tab tab, int position, boolean setSelected) {
