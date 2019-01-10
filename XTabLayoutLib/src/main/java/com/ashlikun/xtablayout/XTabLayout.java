@@ -284,7 +284,7 @@ public class XTabLayout extends HorizontalScrollView {
                 android.support.design.R.style.TextAppearance_Design_Tab);
         mTabTextSize = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabTextSize, 0);
         xTabTextBold = a.getBoolean(R.styleable.XTabLayout_xTabTextBold, false);
-        mTabSelectedTextSize = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabSelectedTextSize, 0);
+
         xTabTextSelectedBold = a.getBoolean(R.styleable.XTabLayout_xTabTextSelectedBold, false);
 
         // Text colors/sizes come from the text appearance first
@@ -298,7 +298,11 @@ public class XTabLayout extends HorizontalScrollView {
         } finally {
             ta.recycle();
         }
-
+        if (a.hasValue(R.styleable.XTabLayout_xTabSelectedTextSize)) {
+            mTabSelectedTextSize = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabSelectedTextSize, 0);
+        } else {
+            mTabSelectedTextSize = mTabTextSize;
+        }
         if (a.hasValue(R.styleable.XTabLayout_xTabTextColor)) {
             // If we have an explicit text color set, use it instead
             mTabTextColors = a.getColorStateList(R.styleable.XTabLayout_xTabTextColor);
@@ -534,6 +538,8 @@ public class XTabLayout extends HorizontalScrollView {
         configureTab(tab, mTabs.size());
         if (setSelected) {
             tab.select();
+        } else {
+            tab.updateView();
         }
     }
 
@@ -1002,9 +1008,7 @@ public class XTabLayout extends HorizontalScrollView {
     private void addTabView(Tab tab, int position, boolean setSelected) {
         final TabView tabView = tab.mView;
         mTabStrip.addView(tabView, position, createLayoutParamsForTabs());
-        if (setSelected) {
-            tabView.setSelected(true);
-        }
+        tabView.setSelected(setSelected);
     }
 
     @Override
@@ -1638,9 +1642,7 @@ public class XTabLayout extends HorizontalScrollView {
                 if (mTextView != null) {
                     mTextView.setSelected(selected);
 
-                    if (mTabSelectedTextSize != 0) {
-                        mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabSelectedTextSize);
-                    }
+                    mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabSelectedTextSize);
                     if (xTabTextSelectedBold) {
                         mTextView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
                     } else {
@@ -1724,7 +1726,7 @@ public class XTabLayout extends HorizontalScrollView {
                     }
 
                     if (updateTextView) {
-                        if (mTextView.isSelected() && mTabSelectedTextSize != 0) {
+                        if (mTextView.isSelected()) {
                             mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabSelectedTextSize);
                         } else {
                             mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabTextSize);
@@ -1803,7 +1805,7 @@ public class XTabLayout extends HorizontalScrollView {
                     mTextView = textView;
                     mDefaultMaxLines = TextViewCompat.getMaxLines(mTextView);
                 }
-                if (mTextView.isSelected() && mTabSelectedTextSize != 0) {
+                if (mTextView.isSelected()) {
                     mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabSelectedTextSize);
                 } else {
                     mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabTextSize);
