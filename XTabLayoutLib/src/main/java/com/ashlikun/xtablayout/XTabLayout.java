@@ -1629,11 +1629,7 @@ public class XTabLayout extends HorizontalScrollView {
             if (!selected) {
                 setBackground(xTabItemBackground);
                 mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabTextSize);
-                if (xTabTextBold) {
-                    mTextView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                } else {
-                    mTextView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
-                }
+                mTextView.setTypeface(Typeface.defaultFromStyle(xTabTextBold ? Typeface.BOLD : Typeface.NORMAL));
             }
             if (changed && selected) {
                 setBackground(xTabItemSelectedBackground);
@@ -1733,10 +1729,10 @@ public class XTabLayout extends HorizontalScrollView {
                         } else {
                             mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabTextSize);
                         }
-                        if (mTextView.isSelected() && xTabTextSelectedBold) {
-                            mTextView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                        if (mTextView.isSelected()) {
+                            mTextView.setTypeface(Typeface.defaultFromStyle(xTabTextSelectedBold ? Typeface.BOLD : Typeface.NORMAL));
                         } else {
-                            mTextView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+                            mTextView.setTypeface(Typeface.defaultFromStyle(xTabTextBold ? Typeface.BOLD : Typeface.NORMAL));
                         }
                         mTextView.setMaxLines(maxLines);
                         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -1812,10 +1808,10 @@ public class XTabLayout extends HorizontalScrollView {
                 } else {
                     mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabTextSize);
                 }
-                if (mTextView.isSelected() && xTabTextSelectedBold) {
-                    mTextView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                if (mTextView.isSelected()) {
+                    mTextView.setTypeface(Typeface.defaultFromStyle(xTabTextSelectedBold ? Typeface.BOLD : Typeface.NORMAL));
                 } else {
-                    mTextView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+                    mTextView.setTypeface(Typeface.defaultFromStyle(xTabTextBold ? Typeface.BOLD : Typeface.NORMAL));
                 }
                 mTextView.setTextAppearance(getContext(), mTabTextAppearance);
                 if (mTabTextColors != null) {
