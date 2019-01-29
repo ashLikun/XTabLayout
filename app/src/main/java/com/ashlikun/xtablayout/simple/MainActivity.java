@@ -41,8 +41,6 @@ public class MainActivity extends AppCompatActivity {
         //将TabLayout和ViewPager关联起来。
         final XTabLayout tabLayout = (XTabLayout) findViewById(R.id.xTablayout);
         tabLayout.setupWithViewPager(viewPager);
-        //给TabLayout设置适配器
-        tabLayout.setupWithViewPager(viewPager);
 
     }
 }

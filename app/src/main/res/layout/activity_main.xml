@@ -10,20 +10,15 @@
 
     <com.ashlikun.xtablayout.XTabLayout
         android:id="@+id/xTablayout"
-        android:layout_width="match_parent"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
-        app:xTabDividerColor="#000"
-        app:xTabDividerHeight="15dp"
-        app:xTabDividerWidth="0dp"
-        app:xTabIndicatorColor="#0f0"
+        android:layout_centerHorizontal="true"
+        app:xTabIndicatorColor="#ff4c4d"
         app:xTabIndicatorHeight="2dp"
-        app:xTabIndicatorWidth="10dp"
-        app:xTabItemBackground="#ffffff"
-        app:xTabMode="auto"
-        app:xTabSelectedTextColor="#f00"
-        app:xTabSelectedTextSize="20sp"
-        app:xTabTextColor="#000"
-        app:xTabTextSize="15sp" />
+        app:xTabIndicatorWidthWidthText="true"
+        app:xTabMode="fixed"
+        app:xTabTextColor="#000000"
+        app:xTabTextSize="18dp" />
 
 
     <android.support.v4.view.ViewPager
