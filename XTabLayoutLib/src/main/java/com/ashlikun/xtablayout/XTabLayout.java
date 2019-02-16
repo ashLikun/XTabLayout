@@ -1866,7 +1866,7 @@ public class XTabLayout extends HorizontalScrollView {
                 int bottomMargin = 0;
                 if (hasText && iconView.getVisibility() == VISIBLE) {
                     // If we're showing both text and icon, add some margin bottom to the icon
-                    bottomMargin = dpToPx(DEFAULT_GAP_TEXT_ICON);
+                    bottomMargin = iconAndTextSpace;
                 }
                 if (bottomMargin != lp.bottomMargin) {
                     lp.bottomMargin = bottomMargin;
