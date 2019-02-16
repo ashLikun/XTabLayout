@@ -10,13 +10,13 @@
 
     <com.ashlikun.xtablayout.XTabLayout
         android:id="@+id/xTablayout"
-        android:layout_width="170dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         app:xTabIndicatorColor="#ff4c4d"
         app:xTabIndicatorHeight="2dp"
         app:xTabIndicatorWidthWidthText="true"
-        app:xTabMode="fixed"
+        app:xTabMode="auto"
         app:xTabTextColor="#000000"
         app:xTabTextSize="18dp" />
 

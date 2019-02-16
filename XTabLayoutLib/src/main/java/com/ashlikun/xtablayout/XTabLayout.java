@@ -72,7 +72,7 @@ import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
 public class XTabLayout extends HorizontalScrollView {
 
     private static final int DEFAULT_HEIGHT_WITH_TEXT_ICON = 72;
-    private static final int DEFAULT_GAP_TEXT_ICON = 8;
+    private static final int DEFAULT_GAP_TEXT_ICON = 5;
     private static final int INVALID_WIDTH = -1;
     private static final int DEFAULT_HEIGHT = 48;
     private static final int TAB_MIN_WIDTH_MARGIN = 56;
@@ -215,6 +215,10 @@ public class XTabLayout extends HorizontalScrollView {
     private int dividerHeight;
     private int dividerColor;
     private int dividerGravity;
+    /**
+     * 图标与文字距离
+     */
+    private int iconAndTextSpace;
 
 
     private OnTabSelectedListener mSelectedListener;
@@ -334,11 +338,12 @@ public class XTabLayout extends HorizontalScrollView {
 
         dividerWidth = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabDividerWidth, 0);
         dividerHeight = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabDividerHeight, 0);
+
         dividerColor = a.getColor(R.styleable.XTabLayout_xTabDividerColor, Color.BLACK);
         dividerGravity = a.getInteger(R.styleable.XTabLayout_xTabDividerGravity, DividerDrawable.CENTER);
 
         xTabDividerWidthWidthText = a.getBoolean(R.styleable.XTabLayout_xTabIndicatorWidthWidthText, false);
-
+        iconAndTextSpace = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabIconAndTextSpace, dpToPx(DEFAULT_GAP_TEXT_ICON));
         a.recycle();
 
         // TODO add attr for these
@@ -1790,13 +1795,13 @@ public class XTabLayout extends HorizontalScrollView {
                 // If there isn't a custom view, we'll us our own in-built layouts
                 if (mIconView == null) {
                     ImageView iconView = (ImageView) LayoutInflater.from(getContext())
-                            .inflate(android.support.design.R.layout.design_layout_tab_icon, this, false);
+                            .inflate(R.layout.design_layout_xtab_icon, this, false);
                     addView(iconView, 0);
                     mIconView = iconView;
                 }
                 if (mTextView == null) {
                     TextView textView = (TextView) LayoutInflater.from(getContext())
-                            .inflate(android.support.design.R.layout.design_layout_tab_text, this, false);
+                            .inflate(R.layout.design_layout_xtab_text, this, false);
                     addView(textView);
                     mTextView = textView;
                     mDefaultMaxLines = TextViewCompat.getMaxLines(mTextView);

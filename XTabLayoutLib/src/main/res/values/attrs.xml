@@ -63,5 +63,7 @@
             <enum name="center" value="0x00000001" />
             <enum name="bottom" value="0x00000002" />
         </attr>
+        <!--图标与文字的距离-->
+        <attr name="xTabIconAndTextSpace" format="dimension" />
     </declare-styleable>
 </resources>
