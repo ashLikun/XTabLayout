@@ -413,20 +413,29 @@ public class XTabLayout extends HorizontalScrollView {
      *
      * @param position
      */
-    public void setCurrentTabPosition(final int position) {
+    public void setCurrentTabPosition(final int position, final boolean isNotifica) {
         if (position >= 0 && position < getTabCount()) {
             if (onLayoutOk) {
-                selectTab(getTabAt(position), true);
+                selectTab(getTabAt(position), true, isNotifica);
             } else {
                 postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        setCurrentTabPosition(position);
+                        setCurrentTabPosition(position, isNotifica);
                     }
                 }, 50);
             }
 
         }
+    }
+
+    /**
+     * 设置当前的位置
+     *
+     * @param position
+     */
+    public void setCurrentTabPosition(final int position) {
+        setCurrentTabPosition(position, true);
     }
 
     /**
@@ -1204,17 +1213,19 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     void selectTab(Tab tab) {
-        selectTab(tab, true);
+        selectTab(tab, true, true);
     }
 
-    void selectTab(Tab tab, boolean updateIndicator) {
+    void selectTab(Tab tab, boolean updateIndicator, boolean isNotifica) {
         if (mSelectedTab == tab) {
             if (mSelectedTab != null) {
-                if (mSelectedListener != null) {
-                    mSelectedListener.onTabReselected(mSelectedTab);
-                }
-                for (OnTabSelectedListener onTabSelectedListener : mSelectedListeners) {
-                    onTabSelectedListener.onTabReselected(mSelectedTab);
+                if (isNotifica) {
+                    if (mSelectedListener != null) {
+                        mSelectedListener.onTabReselected(mSelectedTab);
+                    }
+                    for (OnTabSelectedListener onTabSelectedListener : mSelectedListeners) {
+                        onTabSelectedListener.onTabReselected(mSelectedTab);
+                    }
                 }
                 animateToTab(tab.getPosition());
             }
@@ -1232,21 +1243,25 @@ public class XTabLayout extends HorizontalScrollView {
                     animateToTab(newPosition);
                 }
             }
-            if (mSelectedTab != null && mSelectedTab.getPosition() != Tab.INVALID_POSITION) {
-                if (mSelectedListener != null) {
-                    mSelectedListener.onTabUnselected(mSelectedTab);
-                }
-                for (OnTabSelectedListener onTabSelectedListener : mSelectedListeners) {
-                    onTabSelectedListener.onTabUnselected(mSelectedTab);
+            if (isNotifica) {
+                if (mSelectedTab != null && mSelectedTab.getPosition() != Tab.INVALID_POSITION) {
+                    if (mSelectedListener != null) {
+                        mSelectedListener.onTabUnselected(mSelectedTab);
+                    }
+                    for (OnTabSelectedListener onTabSelectedListener : mSelectedListeners) {
+                        onTabSelectedListener.onTabUnselected(mSelectedTab);
+                    }
                 }
             }
             mSelectedTab = tab;
-            if (mSelectedTab != null && mSelectedTab.getPosition() != Tab.INVALID_POSITION) {
-                if (mSelectedListener != null) {
-                    mSelectedListener.onTabSelected(mSelectedTab);
-                }
-                for (OnTabSelectedListener onTabSelectedListener : mSelectedListeners) {
-                    onTabSelectedListener.onTabSelected(mSelectedTab);
+            if (isNotifica) {
+                if (mSelectedTab != null && mSelectedTab.getPosition() != Tab.INVALID_POSITION) {
+                    if (mSelectedListener != null) {
+                        mSelectedListener.onTabSelected(mSelectedTab);
+                    }
+                    for (OnTabSelectedListener onTabSelectedListener : mSelectedListeners) {
+                        onTabSelectedListener.onTabSelected(mSelectedTab);
+                    }
                 }
             }
         }
@@ -2370,7 +2385,7 @@ public class XTabLayout extends HorizontalScrollView {
                 final boolean updateIndicator = mScrollState == SCROLL_STATE_IDLE
                         || (mScrollState == SCROLL_STATE_SETTLING
                         && mPreviousScrollState == SCROLL_STATE_IDLE);
-                tabLayout.selectTab(tabLayout.getTabAt(position), updateIndicator);
+                tabLayout.selectTab(tabLayout.getTabAt(position), updateIndicator, true);
             }
         }
 
