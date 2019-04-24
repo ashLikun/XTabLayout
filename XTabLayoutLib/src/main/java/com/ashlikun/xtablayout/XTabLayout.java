@@ -16,22 +16,6 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.IntDef;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.design.widget.TabLayout;
-import android.support.v4.util.Pools;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.TextViewCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.content.res.AppCompatResources;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -56,10 +40,26 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IntDef;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.util.Pools;
+import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.widget.TextViewCompat;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import static android.R.attr.maxWidth;
-import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
-import static android.support.v4.view.ViewPager.SCROLL_STATE_IDLE;
-import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
+import static androidx.viewpager.widget.ViewPager.SCROLL_STATE_DRAGGING;
+import static androidx.viewpager.widget.ViewPager.SCROLL_STATE_IDLE;
+import static androidx.viewpager.widget.ViewPager.SCROLL_STATE_SETTLING;
 
 /**
  * @author　　: 李坤
@@ -127,7 +127,7 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Gravity用于填充{@link TabLayout}尽可能多。此选项仅生效
+     * Gravity用于填充{@link XTabLayout}尽可能多。此选项仅生效
      * 当与{@link #MODE_FIXED}一起使用时。
      *
      * @see #setTabGravity(int)
@@ -136,7 +136,7 @@ public class XTabLayout extends HorizontalScrollView {
     public static final int GRAVITY_FILL = 0;
 
     /**
-     * 重力用于在{@link TabLayout}的中心布局选项卡。
+     * 重力用于在{@link XTabLayout}的中心布局选项卡。
      *
      * @see #setTabGravity(int)
      * @see #getTabGravity()
@@ -262,7 +262,7 @@ public class XTabLayout extends HorizontalScrollView {
                 LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.XTabLayout,
-                defStyleAttr, android.support.design.R.style.Widget_Design_TabLayout);
+                defStyleAttr, R.style.Widget_Design_TabLayout);
 
         mTabStrip.setSelectedIndicatorHeight(
                 a.getDimensionPixelSize(R.styleable.XTabLayout_xTabIndicatorHeight, dpToPx(2)));
@@ -285,7 +285,7 @@ public class XTabLayout extends HorizontalScrollView {
         xTabTextAllCaps = a.getBoolean(R.styleable.XTabLayout_xTabTextAllCaps, false);
 
         mTabTextAppearance = a.getResourceId(R.styleable.XTabLayout_xTabTextAppearance,
-                android.support.design.R.style.TextAppearance_Design_Tab);
+                R.style.TextAppearance_Design_Tab);
         mTabTextSize = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabTextSize, 0);
         xTabTextBold = a.getBoolean(R.styleable.XTabLayout_xTabTextBold, false);
 
@@ -293,12 +293,12 @@ public class XTabLayout extends HorizontalScrollView {
 
         // Text colors/sizes come from the text appearance first
         final TypedArray ta = context.obtainStyledAttributes(mTabTextAppearance,
-                android.support.design.R.styleable.TextAppearance);
+                R.styleable.TextAppearance);
         try {
             if (mTabTextSize == 0) {
-                mTabTextSize = ta.getDimensionPixelSize(android.support.design.R.styleable.TextAppearance_android_textSize, 0);
+                mTabTextSize = ta.getDimensionPixelSize(R.styleable.TextAppearance_android_textSize, 0);
             }
-            mTabTextColors = ta.getColorStateList(android.support.design.R.styleable.TextAppearance_android_textColor);
+            mTabTextColors = ta.getColorStateList(R.styleable.TextAppearance_android_textColor);
         } finally {
             ta.recycle();
         }
@@ -348,8 +348,8 @@ public class XTabLayout extends HorizontalScrollView {
 
         // TODO add attr for these
         final Resources res = getResources();
-        mTabTextMultiLineSize = res.getDimensionPixelSize(android.support.design.R.dimen.design_tab_text_size_2line);
-        mScrollableTabMinWidth = res.getDimensionPixelSize(android.support.design.R.dimen.design_tab_scrollable_min_width);
+        mTabTextMultiLineSize = res.getDimensionPixelSize(R.dimen.design_tab_text_size_2line);
+        mScrollableTabMinWidth = res.getDimensionPixelSize(R.dimen.design_tab_scrollable_min_width);
 
         // Now apply the tab mode and gravity
         applyModeAndGravity(true);
@@ -450,7 +450,7 @@ public class XTabLayout extends HorizontalScrollView {
      * Sets the tab indicator's color for the currently selected tab.
      *
      * @param color color to use for the indicator
-     * @attr ref android.support.design.R.styleable#TabLayout_tabIndicatorColor
+     * @attr ref R.styleable#TabLayout_tabIndicatorColor
      */
     public void setSelectedTabIndicatorColor(@ColorInt int color) {
         mTabStrip.setSelectedIndicatorColor(color);
@@ -460,7 +460,7 @@ public class XTabLayout extends HorizontalScrollView {
      * Sets the tab indicator's height for the currently selected tab.
      *
      * @param height height to use for the indicator in pixels
-     * @attr ref android.support.design.R.styleable#TabLayout_tabIndicatorHeight
+     * @attr ref R.styleable#TabLayout_tabIndicatorHeight
      */
     public void setSelectedTabIndicatorHeight(int height) {
         mTabStrip.setSelectedIndicatorHeight(height);
@@ -776,9 +776,9 @@ public class XTabLayout extends HorizontalScrollView {
      * </ul>
      *
      * @param mode one of {@link #MODE_FIXED} or {@link #MODE_SCROLLABLE}or {@link #MODE_AUTO}.
-     * @attr ref android.support.design.R.styleable#TabLayout_tabMode
+     * @attr ref R.styleable#TabLayout_tabMode
      */
-    public void setTabMode(@TabLayout.Mode int mode) {
+    public void setTabMode(@Mode int mode) {
         if (mode != mMode) {
             mMode = mode;
             applyModeAndGravity(true);
@@ -786,11 +786,11 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Returns the current mode used by this {@link TabLayout}.
+     * Returns the current mode used by this {@link XTabLayout}.
      *
      * @see #setTabMode(int)
      */
-    @TabLayout.Mode
+    @XTabLayout.Mode
     public int getTabMode() {
         return mMode;
     }
@@ -799,9 +799,9 @@ public class XTabLayout extends HorizontalScrollView {
      * Set the gravity to use when laying out the tabs.
      *
      * @param gravity one of {@link #GRAVITY_CENTER} or {@link #GRAVITY_FILL}.
-     * @attr ref android.support.design.R.styleable#TabLayout_tabGravity
+     * @attr ref R.styleable#TabLayout_tabGravity
      */
-    public void setTabGravity(@TabLayout.TabGravity int gravity) {
+    public void setTabGravity(@TabGravity int gravity) {
         if (mTabGravity != gravity) {
             mTabGravity = gravity;
             applyModeAndGravity(true);
@@ -813,7 +813,7 @@ public class XTabLayout extends HorizontalScrollView {
      *
      * @return one of {@link #GRAVITY_CENTER} or {@link #GRAVITY_FILL}.
      */
-    @TabLayout.TabGravity
+    @TabGravity
     public int getTabGravity() {
         return mTabGravity;
     }
@@ -841,15 +841,15 @@ public class XTabLayout extends HorizontalScrollView {
     /**
      * Sets the text colors for the different states (normal, selected) used for the tabs.
      *
-     * @attr ref android.support.design.R.styleable#TabLayout_tabTextColor
-     * @attr ref android.support.design.R.styleable#TabLayout_tabSelectedTextColor
+     * @attr ref R.styleable#TabLayout_tabTextColor
+     * @attr ref R.styleable#TabLayout_tabSelectedTextColor
      */
     public void setTabTextColors(int normalColor, int selectedColor) {
         setTabTextColors(createColorStateList(normalColor, selectedColor));
     }
 
     /**
-     * The one-stop shop for setting up this {@link TabLayout} with a {@link ViewPager}.
+     * The one-stop shop for setting up this {@link XTabLayout} with a {@link ViewPager}.
      * <p>
      * <p>This method will link the given ViewPager and this TabLayout together so that any
      * changes in one are automatically reflected in the other. This includes adapter changes,
@@ -2335,7 +2335,7 @@ public class XTabLayout extends HorizontalScrollView {
 
     /**
      * A {@link ViewPager.OnPageChangeListener} class which contains the
-     * necessary calls back to the provided {@link TabLayout} so that the tab position is
+     * necessary calls back to the provided {@link XTabLayout} so that the tab position is
      * kept in sync.
      * <p>
      * <p>This class stores the provided TabLayout weakly, meaning that you can use
@@ -2395,7 +2395,7 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * A {@link TabLayout.OnTabSelectedListener} class which contains the necessary calls back
+     * A {@link OnTabSelectedListener} class which contains the necessary calls back
      * to the provided {@link ViewPager} so that the tab position is kept in sync.
      */
     public static class ViewPagerOnTabSelectedListener implements OnTabSelectedListener {

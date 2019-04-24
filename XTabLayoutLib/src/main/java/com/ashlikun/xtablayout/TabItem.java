@@ -16,11 +16,10 @@
 
 package com.ashlikun.xtablayout;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.design.widget.TabLayout;
-import android.support.v7.widget.TintTypedArray;
+import com.google.android.material.tabs.TabLayout;
+import androidx.appcompat.widget.TintTypedArray;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -30,9 +29,9 @@ import android.view.View;
  * setting of a tab items's text, icon and custom layout. See TabLayout for more information on how
  * to use it.
  *
- * @attr ref android.support.design.R.styleable#TabItem_android_icon
- * @attr ref android.support.design.R.styleable#TabItem_android_text
- * @attr ref android.support.design.R.styleable#TabItem_android_layout
+ * @attr ref R.styleable#TabItem_android_icon
+ * @attr ref R.styleable#TabItem_android_text
+ * @attr ref R.styleable#TabItem_android_layout
  * @see TabLayout
  */
 public final class TabItem extends View {
