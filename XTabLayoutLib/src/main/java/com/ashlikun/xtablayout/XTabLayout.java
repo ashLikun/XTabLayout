@@ -34,12 +34,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.IntDef;
@@ -55,6 +49,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.widget.TextViewCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import static android.R.attr.maxWidth;
 import static androidx.viewpager.widget.ViewPager.SCROLL_STATE_DRAGGING;
@@ -484,8 +484,8 @@ public class XTabLayout extends HorizontalScrollView {
         setScrollPosition(position, positionOffset, updateSelectedText, true);
     }
 
-    private void setScrollPosition(int position, float positionOffset, boolean updateSelectedText,
-                                   boolean updateIndicatorPosition) {
+    public void setScrollPosition(int position, float positionOffset, boolean updateSelectedText,
+                                  boolean updateIndicatorPosition) {
         final int roundedPosition = Math.round(position + positionOffset);
         if (roundedPosition < 0 || roundedPosition >= mTabStrip.getChildCount()) {
             return;
@@ -2021,7 +2021,7 @@ public class XTabLayout extends HorizontalScrollView {
                 }
 
                 if (allTabWidth < getMeasuredWidth()) {
-                    setGravity(Gravity.CENTER_HORIZONTAL);
+                    setGravity(Gravity.START);
                     if (mTabGravity == GRAVITY_CENTER) {
                         isAutoAndCenter = true;
                     } else {
@@ -2030,7 +2030,7 @@ public class XTabLayout extends HorizontalScrollView {
                                     (LayoutParams) getChildAt(i).getLayoutParams();
                             if (lp.width != 0 || lp.weight != 1) {
                                 lp.width = 0;
-                                lp.weight = 1;
+                                lp.weight = count == 1 ? 0 : 1;
                                 remeasure = true;
                             }
                         }

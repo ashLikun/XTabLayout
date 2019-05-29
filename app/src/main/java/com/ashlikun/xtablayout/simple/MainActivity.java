@@ -1,9 +1,10 @@
 package com.ashlikun.xtablayout.simple;
 
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.ashlikun.xtablayout.XTabLayout;
 
@@ -24,8 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private void initViewPager() {
         List<String> titles = new ArrayList<>();
         titles.add("第一");
-        titles.add("第二第二");
-        titles.add("第三");
+
 
         for (int i = 0; i < titles.size(); i++) {
             if (i % 2 == 0) {

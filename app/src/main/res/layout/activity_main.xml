@@ -13,10 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        app:xTabGravity="1"
         app:xTabIndicatorColor="#ff4c4d"
         app:xTabIndicatorHeight="2dp"
         app:xTabIndicatorWidthWidthText="true"
+        app:xTabMinWidth="10dp"
         app:xTabMode="auto"
+        app:xTabPaddingEnd="5dp"
+        app:xTabPaddingStart="5dp"
         app:xTabTextColor="#000000"
         app:xTabTextSize="18dp" />
 
