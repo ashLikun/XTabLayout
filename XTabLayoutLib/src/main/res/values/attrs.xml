@@ -9,7 +9,7 @@
         <attr name="xTabIndicatorColor" format="color" />
         <!--指示器宽度和字体一样-->
         <attr name="xTabIndicatorWidthWidthText" format="boolean" />
-        <!--内边距-->
+        <!--内边距,每个tab边距-->
         <attr name="xTabPadding" format="dimension" />
         <attr name="xTabPaddingStart" format="dimension" />
         <attr name="xTabPaddingTop" format="dimension" />
