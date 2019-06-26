@@ -23,7 +23,6 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.design.widget.TabLayout;
 import android.support.v4.util.Pools;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
@@ -86,10 +85,7 @@ public class XTabLayout extends HorizontalScrollView {
      * 文本字母是否小写转大写
      */
     private boolean xTabTextAllCaps = false;
-    /**
-     * 指示器长度是否随TextView长度变化
-     */
-    private boolean xTabDividerWidthWidthText = false;
+
 
     /**
      * 可滚动选项卡在任何给定时刻显示选项卡的子集，并且可以包含较长的选项卡
@@ -269,6 +265,8 @@ public class XTabLayout extends HorizontalScrollView {
         mTabStrip.setSelectedIndicatorWidth(
                 a.getDimensionPixelSize(R.styleable.XTabLayout_xTabIndicatorWidth, 0));
         mTabStrip.setSelectedIndicatorColor(a.getColor(R.styleable.XTabLayout_xTabIndicatorColor, 0));
+        mTabStrip.setSelectedIndicatorDrawable(a.getDrawable(R.styleable.XTabLayout_xTabIndicatorDrawable));
+        mTabStrip.setWidthText(a.getBoolean(R.styleable.XTabLayout_xTabIndicatorWidthWidthText, false));
 
         mTabPaddingStart = mTabPaddingTop = mTabPaddingEnd = mTabPaddingBottom = a
                 .getDimensionPixelSize(R.styleable.XTabLayout_xTabPadding, 0);
@@ -342,11 +340,9 @@ public class XTabLayout extends HorizontalScrollView {
         dividerColor = a.getColor(R.styleable.XTabLayout_xTabDividerColor, Color.BLACK);
         dividerGravity = a.getInteger(R.styleable.XTabLayout_xTabDividerGravity, DividerDrawable.CENTER);
 
-        xTabDividerWidthWidthText = a.getBoolean(R.styleable.XTabLayout_xTabIndicatorWidthWidthText, false);
         iconAndTextSpace = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabIconAndTextSpace, dpToPx(DEFAULT_GAP_TEXT_ICON));
         a.recycle();
 
-        // TODO add attr for these
         final Resources res = getResources();
         mTabTextMultiLineSize = res.getDimensionPixelSize(R.dimen.design_tab_text_size_2line);
         mScrollableTabMinWidth = res.getDimensionPixelSize(R.dimen.design_tab_scrollable_min_width);
@@ -454,6 +450,19 @@ public class XTabLayout extends HorizontalScrollView {
      */
     public void setSelectedTabIndicatorColor(@ColorInt int color) {
         mTabStrip.setSelectedIndicatorColor(color);
+    }
+
+    /**
+     * 设置指示器的Drawable
+     *
+     * @attr ref R.styleable#xTabIndicatorDrawable
+     */
+    public void setSelectedTabIndicatorDrawable(Drawable drawable) {
+        mTabStrip.setSelectedIndicatorDrawable(drawable);
+    }
+
+    public void setSelectedTabIndicatorDrawable(@DrawableRes int drawable) {
+        mTabStrip.setSelectedIndicatorDrawable(getResources().getDrawable(drawable));
     }
 
     /**
@@ -1384,7 +1393,7 @@ public class XTabLayout extends HorizontalScrollView {
          * <p>
          * If the provided view contains a {@link TextView} with an ID of
          * {@link android.R.id#text1} then that will be updated with the value given
-         * to {@link #setText(CharSequence)}. Similarly, if this layout contains an
+         * to {@link #setText}. Similarly, if this layout contains an
          * {@link ImageView} with ID {@link android.R.id#icon} then it will be updated with
          * the value given to {@link #setIcon(Drawable)}.
          * </p>
@@ -1404,7 +1413,7 @@ public class XTabLayout extends HorizontalScrollView {
          * <p>
          * If the inflated layout contains a {@link TextView} with an ID of
          * {@link android.R.id#text1} then that will be updated with the value given
-         * to {@link #setText(CharSequence)}. Similarly, if this layout contains an
+         * to {@link #setText}. Similarly, if this layout contains an
          * {@link ImageView} with ID {@link android.R.id#icon} then it will be updated with
          * the value given to {@link #setIcon(Drawable)}.
          * </p>
@@ -1535,7 +1544,7 @@ public class XTabLayout extends HorizontalScrollView {
          *
          * @param resId A resource ID referring to the description text
          * @return The current instance for call chaining
-         * @see #setContentDescription(CharSequence)
+         * @see #setContentDescription
          * @see #getContentDescription()
          */
         @NonNull
@@ -1566,7 +1575,7 @@ public class XTabLayout extends HorizontalScrollView {
          * Gets a brief description of this tab's content for use in accessibility support.
          *
          * @return Description of this tab's content
-         * @see #setContentDescription(CharSequence)
+         * @see #setContentDescription
          * @see #setContentDescription(int)
          */
         @Nullable
@@ -1932,6 +1941,11 @@ public class XTabLayout extends HorizontalScrollView {
     public class SlidingTabStrip extends LinearLayout {
         private int mSelectedIndicatorHeight;
         private int mSelectedIndicatorWidth;
+        /**
+         * 指示器长度是否随TextView长度变化
+         */
+        private boolean xTabDividerWidthText = false;
+        private Drawable mSelectedIndicatorDrawable;
         private final Paint mSelectedIndicatorPaint;
 
         private int mSelectedPosition = -1;
@@ -1948,9 +1962,32 @@ public class XTabLayout extends HorizontalScrollView {
             mSelectedIndicatorPaint = new Paint();
         }
 
+        /**
+         * 指示器长度是否随TextView长度变化
+         */
+        public void setWidthText(boolean b) {
+            if (xTabDividerWidthText != b) {
+                xTabDividerWidthText = b;
+                ViewCompat.postInvalidateOnAnimation(this);
+            }
+        }
+
         public void setSelectedIndicatorColor(int color) {
             if (mSelectedIndicatorPaint.getColor() != color) {
                 mSelectedIndicatorPaint.setColor(color);
+                ViewCompat.postInvalidateOnAnimation(this);
+            }
+        }
+
+        public void setSelectedIndicatorDrawable(Drawable drawable) {
+            if (drawable != null && mSelectedIndicatorDrawable != drawable) {
+                mSelectedIndicatorDrawable = drawable;
+                if (mSelectedIndicatorDrawable.getIntrinsicHeight() > 0) {
+                    mSelectedIndicatorHeight = mSelectedIndicatorDrawable.getIntrinsicHeight();
+                }
+                if (mSelectedIndicatorDrawable.getIntrinsicWidth() > 0) {
+                    mSelectedIndicatorWidth = mSelectedIndicatorDrawable.getIntrinsicWidth();
+                }
                 ViewCompat.postInvalidateOnAnimation(this);
             }
         }
@@ -2122,8 +2159,9 @@ public class XTabLayout extends HorizontalScrollView {
                 right = selectedTitle.getRight();
 
                 int haftWidth = 0;
-                if (mSelectedIndicatorWidth == 0
-                        && !xTabDividerWidthWidthText) {
+                if (xTabDividerWidthText) {
+                    mSelectedIndicatorWidth = mSelectedTab.getTextWidth();
+                } else if (mSelectedIndicatorWidth == 0) {
                     mSelectedIndicatorWidth = maxWidth;
                 }
                 if (mSelectedIndicatorWidth != 0) {
@@ -2245,7 +2283,7 @@ public class XTabLayout extends HorizontalScrollView {
                     mIndicatorLeft += (maxWidth - mSelectedIndicatorWidth) / 2;
                     mIndicatorRight -= (maxWidth - mSelectedIndicatorWidth) / 2;
                 }*/
-                if (mSelectedIndicatorWidth != 0 && !xTabDividerWidthWidthText) {
+                if (mSelectedIndicatorWidth != 0) {
                     int maxWidth = mIndicatorRight - mIndicatorLeft;
                     if (maxWidth > mSelectedIndicatorWidth) {
                         mIndicatorLeft += (maxWidth - mSelectedIndicatorWidth) / 2;
@@ -2258,9 +2296,16 @@ public class XTabLayout extends HorizontalScrollView {
                         mIndicatorRight -= (maxWidth - mSelectedTab.getTextWidth()) / 2;
                     }
                 }
-
-                canvas.drawRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
-                        mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
+                if (mSelectedIndicatorDrawable != null) {
+                    mSelectedIndicatorDrawable.setBounds(0, 0, mIndicatorRight - mIndicatorLeft, mSelectedIndicatorHeight);
+                    canvas.save();
+                    canvas.translate(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight);
+                    mSelectedIndicatorDrawable.draw(canvas);
+                    canvas.restore();
+                } else {
+                    canvas.drawRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
+                            mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
+                }
             }
         }
     }

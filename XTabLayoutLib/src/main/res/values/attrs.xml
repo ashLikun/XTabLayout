@@ -7,6 +7,8 @@
         <attr name="xTabIndicatorWidth" format="dimension" />
         <!--指示器颜色-->
         <attr name="xTabIndicatorColor" format="color" />
+        <!--指示器的资源-->
+        <attr name="xTabIndicatorDrawable" format="reference" />
         <!--指示器宽度和字体一样-->
         <attr name="xTabIndicatorWidthWidthText" format="boolean" />
         <!--内边距,每个tab边距-->
