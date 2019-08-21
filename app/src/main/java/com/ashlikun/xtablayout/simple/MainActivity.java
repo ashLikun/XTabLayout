@@ -24,7 +24,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViewPager() {
         List<String> titles = new ArrayList<>();
-        titles.add("第一");
+        titles.add("全部");
+        titles.add("待付款");
+        titles.add("待使用");
+        titles.add("待评价");
+        titles.add("已完成");
+        titles.add("已取消");
 
 
         for (int i = 0; i < titles.size(); i++) {
@@ -39,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adatper);
         viewPager.setOffscreenPageLimit(4);
         //将TabLayout和ViewPager关联起来。
-        final XTabLayout tabLayout = (XTabLayout) findViewById(R.id.xTablayout);
+        final XTabLayout tabLayout = (XTabLayout) findViewById(R.id.tabLayout2);
         tabLayout.setupWithViewPager(viewPager);
 
     }

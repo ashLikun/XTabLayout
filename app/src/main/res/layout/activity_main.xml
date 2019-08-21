@@ -8,22 +8,38 @@
     android:background="#ffffff"
     android:orientation="vertical">
 
+    <!--<com.ashlikun.xtablayout.XTabLayout-->
+        <!--android:id="@+id/xTablayout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--app:xTabGravity="1"-->
+        <!--app:xTabIndicatorColor="#ff4c4d"-->
+        <!--app:xTabIndicatorHeight="2dp"-->
+        <!--app:xTabIndicatorWidthWidthText="true"-->
+        <!--app:xTabMinWidth="10dp"-->
+        <!--app:xTabMode="auto"-->
+        <!--app:xTabPaddingEnd="5dp"-->
+        <!--app:xTabPaddingStart="5dp"-->
+        <!--app:xTabTextColor="#000000"-->
+        <!--app:xTabTextSize="18dp" />-->
+
     <com.ashlikun.xtablayout.XTabLayout
-        android:id="@+id/xTablayout"
+        android:id="@+id/tabLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        app:xTabGravity="1"
-        app:xTabIndicatorColor="#ff4c4d"
-        app:xTabIndicatorHeight="2dp"
+        android:background="#ffffff"
+        app:xTabDividerWidth="0dp"
+        app:xTabIndicatorColor="@color/colorPrimary"
         app:xTabIndicatorWidthWidthText="true"
-        app:xTabMinWidth="10dp"
-        app:xTabMode="auto"
-        app:xTabPaddingEnd="5dp"
-        app:xTabPaddingStart="5dp"
-        app:xTabTextColor="#000000"
-        app:xTabTextSize="18dp" />
-
+        app:xTabMinWidth="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:xTabMode="fixed"
+        app:xTabPadding="0dp"
+        app:xTabTextSize="14dp"
+        app:xTabSelectedTextColor="@color/colorPrimary"
+        app:xTabTextColor="#000000" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"

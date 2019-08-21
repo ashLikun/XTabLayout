@@ -76,7 +76,6 @@ public class XTabLayout extends HorizontalScrollView {
     private static final int INVALID_WIDTH = -1;
     private static final int DEFAULT_HEIGHT = 48;
     private static final int TAB_MIN_WIDTH_MARGIN = 56;
-    private static final int FIXED_WRAP_GUTTER_MIN = 16;
     private static final int MOTION_NON_ADJACENT_OFFSET = 24;
 
     private static final int ANIMATION_DURATION = 300;
@@ -260,7 +259,6 @@ public class XTabLayout extends HorizontalScrollView {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.XTabLayout,
                 defStyleAttr, R.style.Widget_Design_TabLayout);
-
         mTabStrip.setSelectedIndicatorHeight(
                 a.getDimensionPixelSize(R.styleable.XTabLayout_xTabIndicatorHeight, dpToPx(2)));
         mTabStrip.setSelectedIndicatorWidth(
@@ -338,7 +336,7 @@ public class XTabLayout extends HorizontalScrollView {
         dividerWidth = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabDividerWidth, 0);
         dividerHeight = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabDividerHeight, 0);
 
-        dividerColor = a.getColor(R.styleable.XTabLayout_xTabDividerColor, Color.BLACK);
+        dividerColor = a.getColor(R.styleable.XTabLayout_xTabDividerColor, Color.TRANSPARENT);
         dividerGravity = a.getInteger(R.styleable.XTabLayout_xTabDividerGravity, DividerDrawable.CENTER);
 
         iconAndTextSpace = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabIconAndTextSpace, dpToPx(DEFAULT_GAP_TEXT_ICON));
@@ -1071,7 +1069,7 @@ public class XTabLayout extends HorizontalScrollView {
             lp.width = 0;
             lp.weight = 1;
         } else if (mMode == MODE_AUTO && mTabGravity == GRAVITY_FILL) {
-            if (mTabStrip.getMeasuredWidth() < getMeasuredWidth()) {
+            if (mTabStrip.getMeasuredWidth() < getValidWidth()) {
                 lp.width = 0;
                 lp.weight = 1;
             } else {
@@ -1144,14 +1142,14 @@ public class XTabLayout extends HorizontalScrollView {
                 case MODE_SCROLLABLE:
                     // We only need to resize the child if it's smaller than us. This is similar
                     // to fillViewport
-                    remeasure = child.getMeasuredWidth() < getMeasuredWidth();
+                    remeasure = child.getMeasuredWidth() < getValidWidth();
                     break;
                 case MODE_FIXED:
                     // Resize the child so that it doesn't scroll
-                    remeasure = child.getMeasuredWidth() != getMeasuredWidth();
+                    remeasure = child.getMeasuredWidth() != getValidWidth();
                     break;
                 case MODE_AUTO:
-                    remeasure = child.getMeasuredWidth() < getMeasuredWidth();
+                    remeasure = child.getMeasuredWidth() < getValidWidth();
                     break;
             }
 
@@ -1160,7 +1158,7 @@ public class XTabLayout extends HorizontalScrollView {
                 int childHeightMeasureSpec = getChildMeasureSpec(heightMeasureSpec, getPaddingTop()
                         + getPaddingBottom(), child.getLayoutParams().height);
                 int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(
-                        getMeasuredWidth(), MeasureSpec.EXACTLY);
+                        getValidWidth(), MeasureSpec.EXACTLY);
                 child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
             }
         }
@@ -1324,6 +1322,10 @@ public class XTabLayout extends HorizontalScrollView {
                 child.requestLayout();
             }
         }
+    }
+
+    private int getValidWidth() {
+        return getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
     }
 
     /**
@@ -2058,7 +2060,7 @@ public class XTabLayout extends HorizontalScrollView {
                     }
                 }
 
-                if (allTabWidth < getMeasuredWidth()) {
+                if (allTabWidth < getValidWidth()) {
                     setGravity(Gravity.START);
                     if (mTabGravity == GRAVITY_CENTER) {
                         isAutoAndCenter = true;
@@ -2073,7 +2075,7 @@ public class XTabLayout extends HorizontalScrollView {
                             }
                         }
                     }
-                } else if (allTabWidth > getMeasuredWidth()) {
+                } else if (allTabWidth > getValidWidth()) {
                     setGravity(Gravity.START);
                     for (int i = 0; i < count; i++) {
                         final LayoutParams lp =
@@ -2105,9 +2107,7 @@ public class XTabLayout extends HorizontalScrollView {
                     return;
                 }
 
-                final int gutter = dpToPx(FIXED_WRAP_GUTTER_MIN);
-
-                if (largestTabWidth * count <= getMeasuredWidth() - gutter * 2) {
+                if (largestTabWidth * count < getValidWidth()) {
                     // If the tabs fit within our width minus gutters, we will set all tabs to have
                     // the same width
                     for (int i = 0; i < count; i++) {
