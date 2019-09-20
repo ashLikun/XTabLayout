@@ -44,8 +44,12 @@
             <enum name="fixed" value="0x00000001" />
             <enum name="auto" value="0x00000002" />
         </attr>
-        <!--对齐方式-->
-        <attr name="xTabGravity" format="integer" />
+        <!--一个时候的对齐方式-->
+        <attr name="xTabOneCountGravity">
+            <enum name="left" value="0x00000003" />
+            <enum name="center" value="0x000000011" />
+            <enum name="right" value="0x00000005" />
+        </attr>
         <!--文字大小-->
         <attr name="xTabTextSize" format="dimension" />
         <!--文字加粗-->

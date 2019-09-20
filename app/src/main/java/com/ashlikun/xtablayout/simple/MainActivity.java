@@ -28,8 +28,6 @@ public class MainActivity extends AppCompatActivity {
         titles.add("待付款");
         titles.add("待使用");
         titles.add("待评价");
-        titles.add("已完成");
-        titles.add("已取消");
 
 
         for (int i = 0; i < titles.size(); i++) {

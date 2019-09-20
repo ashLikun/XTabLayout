@@ -114,6 +114,10 @@ public class XTabLayout extends HorizontalScrollView {
      */
     public static final int MODE_AUTO = 2;
 
+    public static final int GRAVITY_LEFT = 0;
+    public static final int GRAVITY_CENTER = 4;
+    public static final int GRAVITY_RIGHT = 2;
+
     /**
      * @hide
      */
@@ -123,26 +127,9 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Gravity用于填充{@link XTabLayout}尽可能多。此选项仅生效
-     * 当与{@link #MODE_FIXED}一起使用时。
-     *
-     * @see #setTabGravity(int)
-     * @see #getTabGravity()
-     */
-    public static final int GRAVITY_FILL = 0;
-
-    /**
-     * 重力用于在{@link XTabLayout}的中心布局选项卡。
-     *
-     * @see #setTabGravity(int)
-     * @see #getTabGravity()
-     */
-    public static final int GRAVITY_CENTER = 1;
-
-    /**
      * @hide
      */
-    @IntDef(flag = true, value = {GRAVITY_FILL, GRAVITY_CENTER})
+    @IntDef(flag = true, value = {Gravity.LEFT, Gravity.CENTER, Gravity.RIGHT})
     @Retention(RetentionPolicy.SOURCE)
     public @interface TabGravity {
     }
@@ -204,7 +191,7 @@ public class XTabLayout extends HorizontalScrollView {
 
     private int mContentInsetStart;
 
-    private int mTabGravity;
+    private int mTabOneCountGravity;
     private int mMode;
 
     private int dividerWidth;
@@ -332,7 +319,7 @@ public class XTabLayout extends HorizontalScrollView {
 
         mContentInsetStart = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabContentStart, 0);
         mMode = a.getInt(R.styleable.XTabLayout_xTabMode, MODE_AUTO);
-        mTabGravity = a.getInt(R.styleable.XTabLayout_xTabGravity, GRAVITY_FILL);
+        mTabOneCountGravity = a.getInt(R.styleable.XTabLayout_xTabOneCountGravity, Gravity.LEFT);
 
         dividerWidth = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabDividerWidth, 0);
         dividerHeight = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabDividerHeight, 0);
@@ -813,26 +800,21 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Set the gravity to use when laying out the tabs.
-     *
-     * @param gravity one of {@link #GRAVITY_CENTER} or {@link #GRAVITY_FILL}.
-     * @attr ref R.styleable#TabLayout_tabGravity
+     * 一条数据时候的对齐方式
      */
-    public void setTabGravity(@TabGravity int gravity) {
-        if (mTabGravity != gravity) {
-            mTabGravity = gravity;
+    public void setTabGravityOneCount(@TabGravity int gravity) {
+        if (mTabOneCountGravity != gravity) {
+            mTabOneCountGravity = gravity;
             applyModeAndGravity(true);
         }
     }
 
     /**
-     * The current gravity used for laying out tabs.
-     *
-     * @return one of {@link #GRAVITY_CENTER} or {@link #GRAVITY_FILL}.
+     * 一条数据时候的对齐方式
      */
     @TabGravity
-    public int getTabGravity() {
-        return mTabGravity;
+    public int getTabGravityOneCount() {
+        return mTabOneCountGravity;
     }
 
     /**
@@ -1074,10 +1056,10 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     private void updateTabViewLayoutParams(LinearLayout.LayoutParams lp) {
-        if (mMode == MODE_FIXED && mTabGravity == GRAVITY_FILL) {
+        if (mMode == MODE_FIXED) {
             lp.width = 0;
             lp.weight = 1;
-        } else if (mMode == MODE_AUTO && mTabGravity == GRAVITY_FILL) {
+        } else if (mMode == MODE_AUTO) {
             if (mTabStrip.getMeasuredWidth() < getValidWidth()) {
                 lp.width = 0;
                 lp.weight = 1;
@@ -1334,6 +1316,9 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     private int getValidWidth() {
+        if (getMeasuredWidth() == 0) {
+            return 0;
+        }
         return getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
     }
 
@@ -2065,6 +2050,10 @@ public class XTabLayout extends HorizontalScrollView {
                 // EXACTLY. Ignore the first call since anything we do will be overwritten anyway
                 return;
             }
+            //一个的时候特殊处理
+            if (getChildCount() == 1) {
+                setGravity(mTabOneCountGravity);
+            }
             boolean remeasure = false;
             boolean isAutoAndCenter = false;
             if (mMode == MODE_AUTO) {
@@ -2079,18 +2068,17 @@ public class XTabLayout extends HorizontalScrollView {
                 }
 
                 if (allTabWidth < getValidWidth()) {
-                    setGravity(Gravity.START);
-                    if (mTabGravity == GRAVITY_CENTER) {
-                        isAutoAndCenter = true;
-                    } else {
-                        for (int i = 0; i < count; i++) {
-                            final LayoutParams lp =
-                                    (LayoutParams) getChildAt(i).getLayoutParams();
-                            if (lp.width != 0 || lp.weight != 1) {
-                                lp.width = 0;
-                                lp.weight = count == 1 ? 0 : 1;
-                                remeasure = true;
-                            }
+                    if (getChildCount() != 1) {
+                        setGravity(Gravity.CENTER);
+                    }
+                    for (int i = 0; i < count; i++) {
+                        final LayoutParams lp =
+                                (LayoutParams) getChildAt(i).getLayoutParams();
+
+                        if (lp.width != 0 || lp.weight != 1) {
+                            lp.width = 0;
+                            lp.weight = 1;
+                            remeasure = true;
                         }
                     }
                 } else if (allTabWidth > getValidWidth()) {
@@ -2108,7 +2096,7 @@ public class XTabLayout extends HorizontalScrollView {
 
             }
 
-            if (isAutoAndCenter || (mMode == MODE_FIXED && mTabGravity == GRAVITY_CENTER)) {
+            if (isAutoAndCenter || mMode == MODE_FIXED) {
                 final int count = getChildCount();
 
                 // First we'll find the widest tab
@@ -2140,7 +2128,6 @@ public class XTabLayout extends HorizontalScrollView {
                 } else {
                     // If the tabs will wrap to be larger than the width minus gutters, we need
                     // to switch to GRAVITY_FILL
-                    mTabGravity = GRAVITY_FILL;
                     updateTabViews(false);
                     remeasure = true;
                 }

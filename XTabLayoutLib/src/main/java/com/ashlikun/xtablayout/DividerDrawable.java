@@ -13,17 +13,17 @@ import android.graphics.drawable.Drawable;
  * @author　　: 李坤
  * 创建时间: 2018/11/8 10:37
  * 邮箱　　：496546144@qq.com
- * 
+ * <p>
  * 功能介绍：
  */
 
- class DividerDrawable extends Drawable{
+class DividerDrawable extends Drawable {
 
     private Paint paint;
     private RectF rectF;
     private int color = Color.BLACK;
 
-    private int height =0;
+    private int height = 0;
     private int width;
 
     public final static int TOP = 0;
@@ -31,19 +31,19 @@ import android.graphics.drawable.Drawable;
     public final static int BOTTOM = 2;
     private int gravity = CENTER;
 
-    public DividerDrawable(Context context){
-        width = dip2px(context,2);
+    public DividerDrawable(Context context) {
+        width = dip2px(context, 2);
         paint = new Paint();
         paint.setColor(color);
         paint.setAntiAlias(true);
     }
 
-    public void setColor(int color){
+    public void setColor(int color) {
         paint.setColor(color);
     }
 
     public void setGravity(int gravity) {
-        if(gravity!=TOP && gravity != CENTER && gravity != BOTTOM){
+        if (gravity != TOP && gravity != CENTER && gravity != BOTTOM) {
             throw new IllegalArgumentException("Gravity must be one of 0(DividerDrawable.TOP)、" +
                     "1(DividerDrawable.CENTER) and 2(DividerDrawable.BOTTOM)");
         }
@@ -53,33 +53,32 @@ import android.graphics.drawable.Drawable;
     @Override
     public void draw(Canvas canvas) {
         canvas.drawColor(Color.TRANSPARENT);
-        if(height==0 || height>=rectF.bottom) {
+        if (height == 0 || height >= rectF.bottom) {
             canvas.drawRect(rectF, paint);
-        }else{
-            int margin = (int) ((rectF.bottom - height)/2);
-            switch (gravity){
+        } else {
+            int margin = (int) ((rectF.bottom - height) / 2);
+            switch (gravity) {
                 case TOP:
-                    canvas.drawRect(rectF.left,rectF.top,rectF.right,rectF.bottom-margin*2,paint);
+                    canvas.drawRect(rectF.left, rectF.top, rectF.right, rectF.bottom - margin * 2, paint);
                     break;
                 case CENTER:
-                    canvas.drawRect(rectF.left,rectF.top+margin,rectF.right,rectF.bottom-margin,paint);
+                    canvas.drawRect(rectF.left, rectF.top + margin, rectF.right, rectF.bottom - margin, paint);
                     break;
                 case BOTTOM:
-                    canvas.drawRect(rectF.left,rectF.top+margin*2,rectF.right,rectF.bottom,paint);
+                    canvas.drawRect(rectF.left, rectF.top + margin * 2, rectF.right, rectF.bottom, paint);
                     break;
             }
         }
     }
 
     @Override
-    public void setBounds(int left, int top, int right, int bottom)
-    {
+    public void setBounds(int left, int top, int right, int bottom) {
         super.setBounds(left, top, right, bottom);
         rectF = new RectF(left, top, right, bottom);
     }
 
 
-    public void setDividerSize(int width,int height) {
+    public void setDividerSize(int width, int height) {
         this.width = width;
         this.height = height;
         invalidateSelf();
