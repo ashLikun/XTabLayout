@@ -11,6 +11,11 @@
         <attr name="xTabIndicatorDrawable" format="reference" />
         <!--指示器宽度和字体一样-->
         <attr name="xTabIndicatorWidthWidthText" format="boolean" />
+        <!--分割线对齐方式-->
+        <attr name="xTabIndicatorGravity">
+            <enum name="top" value="0x00000000" />
+            <enum name="bottom" value="0x00000002" />
+        </attr>
         <!--内边距,每个tab边距-->
         <attr name="xTabPadding" format="dimension" />
         <attr name="xTabPaddingStart" format="dimension" />

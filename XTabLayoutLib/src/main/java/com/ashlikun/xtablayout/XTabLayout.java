@@ -211,6 +211,7 @@ public class XTabLayout extends HorizontalScrollView {
     private int dividerHeight;
     private int dividerColor;
     private int dividerGravity;
+
     /**
      * 图标与文字距离
      */
@@ -266,7 +267,7 @@ public class XTabLayout extends HorizontalScrollView {
         mTabStrip.setSelectedIndicatorColor(a.getColor(R.styleable.XTabLayout_xTabIndicatorColor, 0));
         mTabStrip.setSelectedIndicatorDrawable(a.getDrawable(R.styleable.XTabLayout_xTabIndicatorDrawable));
         mTabStrip.setWidthText(a.getBoolean(R.styleable.XTabLayout_xTabIndicatorWidthWidthText, false));
-
+        mTabStrip.setIndicatorGravity(a.getInteger(R.styleable.XTabLayout_xTabIndicatorGravity, DividerDrawable.BOTTOM));
         mTabPaddingStart = mTabPaddingTop = mTabPaddingEnd = mTabPaddingBottom = a
                 .getDimensionPixelSize(R.styleable.XTabLayout_xTabPadding, 0);
         mTabPaddingStart = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabPaddingStart,
@@ -339,6 +340,7 @@ public class XTabLayout extends HorizontalScrollView {
         dividerColor = a.getColor(R.styleable.XTabLayout_xTabDividerColor, Color.TRANSPARENT);
         dividerGravity = a.getInteger(R.styleable.XTabLayout_xTabDividerGravity, DividerDrawable.CENTER);
 
+
         iconAndTextSpace = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabIconAndTextSpace, dpToPx(DEFAULT_GAP_TEXT_ICON));
         a.recycle();
 
@@ -401,6 +403,13 @@ public class XTabLayout extends HorizontalScrollView {
         dividerGravity = gravity;
         addDivider();
 
+    }
+
+    /**
+     * 设置指示器线位置
+     */
+    public void setIndicatorGravity(int gravity) {
+        mTabStrip.setIndicatorGravity(gravity);
     }
 
     /**
@@ -1948,6 +1957,8 @@ public class XTabLayout extends HorizontalScrollView {
          * 指示器长度是否随TextView长度变化
          */
         private boolean xTabDividerWidthText = false;
+        //指示器的对齐方式
+        private int xTabIndicatorGravity;
         private Drawable mSelectedIndicatorDrawable;
         private final Paint mSelectedIndicatorPaint;
 
@@ -1971,6 +1982,13 @@ public class XTabLayout extends HorizontalScrollView {
         public void setWidthText(boolean b) {
             if (xTabDividerWidthText != b) {
                 xTabDividerWidthText = b;
+                ViewCompat.postInvalidateOnAnimation(this);
+            }
+        }
+
+        public void setIndicatorGravity(int indicatorGravity) {
+            if (xTabIndicatorGravity != indicatorGravity) {
+                xTabIndicatorGravity = indicatorGravity;
                 ViewCompat.postInvalidateOnAnimation(this);
             }
         }
@@ -2300,12 +2318,24 @@ public class XTabLayout extends HorizontalScrollView {
                 if (mSelectedIndicatorDrawable != null) {
                     mSelectedIndicatorDrawable.setBounds(0, 0, mIndicatorRight - mIndicatorLeft, mSelectedIndicatorHeight);
                     canvas.save();
-                    canvas.translate(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight);
+                    //0:上，2：下
+                    if (xTabIndicatorGravity == 0) {
+                        canvas.translate(mIndicatorLeft, 0);
+                    } else if (xTabIndicatorGravity == 2) {
+                        canvas.translate(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight);
+                    }
                     mSelectedIndicatorDrawable.draw(canvas);
                     canvas.restore();
                 } else {
-                    canvas.drawRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
-                            mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
+                    //0:上，2：下
+                    if (xTabIndicatorGravity == 0) {
+                        canvas.drawRect(mIndicatorLeft, 0,
+                                mIndicatorRight, mSelectedIndicatorHeight, mSelectedIndicatorPaint);
+                    } else if (xTabIndicatorGravity == 2) {
+                        canvas.drawRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
+                                mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
+                    }
+
                 }
             }
         }
