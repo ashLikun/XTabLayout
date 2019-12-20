@@ -52,6 +52,8 @@
         </attr>
         <!--文字大小-->
         <attr name="xTabTextSize" format="dimension" />
+        <!-- 文字最大行数  默认2行-->
+        <attr name="xTabTextMaxLines" format="integer" />
         <!--文字加粗-->
         <attr name="xTabTextBold" format="boolean" />
         <!--选中文字大小-->

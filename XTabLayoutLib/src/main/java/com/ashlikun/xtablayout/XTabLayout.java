@@ -175,6 +175,7 @@ public class XTabLayout extends HorizontalScrollView {
     private int mTabTextAppearance;
     private ColorStateList mTabTextColors;
     private float mTabTextSize = 0;
+    private int mTabTextMaxLines = 2;
     private boolean xTabTextBold;
     private float mTabSelectedTextSize = 0;
     private boolean xTabTextSelectedBold;
@@ -272,6 +273,7 @@ public class XTabLayout extends HorizontalScrollView {
         mTabTextAppearance = a.getResourceId(R.styleable.XTabLayout_xTabTextAppearance,
                 R.style.TextAppearance_Design_Tab);
         mTabTextSize = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabTextSize, 0);
+        mTabTextMaxLines = a.getInt(R.styleable.XTabLayout_xTabTextMaxLines, mTabTextMaxLines);
         xTabTextBold = a.getBoolean(R.styleable.XTabLayout_xTabTextBold, false);
 
         xTabTextSelectedBold = a.getBoolean(R.styleable.XTabLayout_xTabTextSelectedBold, false);
@@ -346,19 +348,15 @@ public class XTabLayout extends HorizontalScrollView {
      * 添加分割线
      */
     private void addDivider() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                if (dividerWidth > 0) {
-                    mTabStrip.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
-                    DividerDrawable dividerDrawable = new DividerDrawable(getContext());
-                    dividerDrawable.setDividerSize(dividerWidth, dividerHeight);
-                    dividerDrawable.setColor(dividerColor);
-                    dividerDrawable.setGravity(dividerGravity);
-                    mTabStrip.setDividerDrawable(dividerDrawable);
-                }
-            }
-        });
+
+        if (dividerWidth > 0) {
+            mTabStrip.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+            DividerDrawable dividerDrawable = new DividerDrawable(getContext());
+            dividerDrawable.setDividerSize(dividerWidth, dividerHeight);
+            dividerDrawable.setColor(dividerColor);
+            dividerDrawable.setGravity(dividerGravity);
+            mTabStrip.setDividerDrawable(dividerDrawable);
+        }
     }
 
     /**
@@ -1823,6 +1821,7 @@ public class XTabLayout extends HorizontalScrollView {
                 if (mTextView == null) {
                     TextView textView = (TextView) LayoutInflater.from(getContext())
                             .inflate(R.layout.design_layout_xtab_text, this, false);
+                    textView.setMaxLines(mTabTextMaxLines);
                     addView(textView);
                     mTextView = textView;
                     mDefaultMaxLines = TextViewCompat.getMaxLines(mTextView);
@@ -1936,6 +1935,7 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     public class SlidingTabStrip extends LinearLayout {
+
         private int mSelectedIndicatorHeight;
         private int mSelectedIndicatorWidth;
         /**
@@ -2065,6 +2065,12 @@ public class XTabLayout extends HorizontalScrollView {
                     if (child.getVisibility() == VISIBLE) {
                         allTabWidth += child.getMeasuredWidth();
                     }
+                }
+
+                //加上分割线
+                if (getDividerDrawable() != null && getDividerDrawable() instanceof DividerDrawable) {
+                    DividerDrawable dividerDrawable = (DividerDrawable) getDividerDrawable();
+                    allTabWidth += dividerDrawable.getIntrinsicWidth() * (count - 1);
                 }
 
                 if (allTabWidth < getValidWidth()) {
