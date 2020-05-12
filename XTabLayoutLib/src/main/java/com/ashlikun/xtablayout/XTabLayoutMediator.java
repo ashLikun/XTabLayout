@@ -3,8 +3,10 @@ package com.ashlikun.xtablayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.ashlikun.xviewpager2.fragment.FragmentPagerAdapter;
 import com.ashlikun.xviewpager2.view.XViewPager;
 import com.google.android.material.tabs.TabLayout;
 
@@ -56,6 +58,19 @@ public class XTabLayoutMediator {
             @NonNull XViewPager viewPager,
             TabConfigurationStrategy tabConfigurationStrategy) {
         this(tabLayout, viewPager, true, tabConfigurationStrategy);
+    }
+
+    public XTabLayoutMediator(
+            @NonNull XTabLayout tabLayout,
+            @NonNull XViewPager viewPager) {
+        this(tabLayout, viewPager, true, null);
+    }
+
+    public XTabLayoutMediator(
+            @NonNull XTabLayout tabLayout,
+            @NonNull XViewPager viewPager,
+            boolean autoRefresh) {
+        this(tabLayout, viewPager, autoRefresh, null);
     }
 
     public XTabLayoutMediator(
@@ -136,7 +151,14 @@ public class XTabLayoutMediator {
             int adapterCount = adapter.getItemCount();
             for (int i = 0; i < adapterCount; i++) {
                 XTabLayout.Tab tab = tabLayout.newTab();
-                tabConfigurationStrategy.onConfigureTab(tab, i);
+                if (tabConfigurationStrategy != null) {
+                    tabConfigurationStrategy.onConfigureTab(tab, i);
+                } else {
+                    Adapter adapter = viewPager.getAdapter();
+                    if (adapter instanceof FragmentPagerAdapter) {
+                        tab.setText(((FragmentPagerAdapter) adapter).getTitle(i));
+                    }
+                }
                 tabLayout.addTab(tab, false);
             }
             // Make sure we reflect the currently set ViewPager item

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.ashlikun.xtablayout.XTabLayout;
+import com.ashlikun.xtablayout.XTabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         titles.add("已完成");
         titles.add("已取消");
         titles.add("退款/售后");
-
+        new XTabLayoutMediator(null, null, null);
 
         for (int i = 0; i < titles.size(); i++) {
             if (i % 2 == 0) {
