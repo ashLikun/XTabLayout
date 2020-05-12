@@ -31,7 +31,8 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation rootProject.ext.designVersion
+    compileOnly rootProject.ext.designVersion
+    compileOnly "com.github.ashLikun:XViewPager2:1.0.3"
 }
 
 apply from: '../maven.gradle'

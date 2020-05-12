@@ -23,7 +23,7 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 ext {
-    superVersion = "1.0.0-beta01"
+    superVersion = "1.1.+"
     compileSdkVersion = 28
     buildToolsVersion = "28.0.3"
     designVersion = "com.google.android.material:material:" + superVersion
