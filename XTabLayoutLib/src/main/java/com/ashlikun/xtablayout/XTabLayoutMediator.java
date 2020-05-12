@@ -15,11 +15,11 @@ import java.lang.ref.WeakReference;
  * 创建时间: 2020/5/12　16:41
  * 邮箱　　：496546144@qq.com
  * <p>
- * 功能介绍：XTabLayout与XViewPager（v2）一起使用
+ * 功能介绍：XXTabLayout与XViewPager（v2）一起使用
  */
 public class XTabLayoutMediator {
     @NonNull
-    private final TabLayout tabLayout;
+    private final XTabLayout tabLayout;
     @NonNull
     private final XViewPager viewPager;
     private final boolean autoRefresh;
@@ -29,9 +29,9 @@ public class XTabLayoutMediator {
     private boolean attached;
 
     @Nullable
-    private TabLayoutOnPageChangeCallback onPageChangeCallback;
+    private XTabLayoutOnPageChangeCallback onPageChangeCallback;
     @Nullable
-    private TabLayout.OnTabSelectedListener onTabSelectedListener;
+    private XTabLayout.OnTabSelectedListener onTabSelectedListener;
     @Nullable
     private RecyclerView.AdapterDataObserver pagerAdapterObserver;
 
@@ -48,21 +48,21 @@ public class XTabLayoutMediator {
          *                 position in the data set.
          * @param position The position of the item within the adapter's data set.
          */
-        void onConfigureTab(@NonNull TabLayout.Tab tab, int position);
+        void onConfigureTab(@NonNull XTabLayout.Tab tab, int position);
     }
 
     public XTabLayoutMediator(
-            @NonNull TabLayout tabLayout,
+            @NonNull XTabLayout tabLayout,
             @NonNull XViewPager viewPager,
-            @NonNull TabConfigurationStrategy tabConfigurationStrategy) {
+            TabConfigurationStrategy tabConfigurationStrategy) {
         this(tabLayout, viewPager, true, tabConfigurationStrategy);
     }
 
     public XTabLayoutMediator(
-            @NonNull TabLayout tabLayout,
+            @NonNull XTabLayout tabLayout,
             @NonNull XViewPager viewPager,
             boolean autoRefresh,
-            @NonNull TabConfigurationStrategy tabConfigurationStrategy) {
+            TabConfigurationStrategy tabConfigurationStrategy) {
         this.tabLayout = tabLayout;
         this.viewPager = viewPager;
         this.autoRefresh = autoRefresh;
@@ -70,8 +70,8 @@ public class XTabLayoutMediator {
     }
 
     /**
-     * Link the TabLayout and the XViewPager together. Must be called after XViewPager has an adapter
-     * set. To be called on a new instance of TabLayoutMediator or if the XViewPager's adapter
+     * Link the XTabLayout and the XViewPager together. Must be called after XViewPager has an adapter
+     * set. To be called on a new instance of XTabLayoutMediator or if the XViewPager's adapter
      * changes.
      *
      * @throws IllegalStateException If the mediator is already attached, or the XViewPager has no
@@ -79,17 +79,17 @@ public class XTabLayoutMediator {
      */
     public void attach() {
         if (attached) {
-            throw new IllegalStateException("TabLayoutMediator is already attached");
+            throw new IllegalStateException("XTabLayoutMediator is already attached");
         }
         adapter = viewPager.getAdapter();
         if (adapter == null) {
             throw new IllegalStateException(
-                    "TabLayoutMediator attached before XViewPager has an " + "adapter");
+                    "XTabLayoutMediator attached before XViewPager has an " + "adapter");
         }
         attached = true;
 
         // Add our custom OnPageChangeCallback to the ViewPager
-        onPageChangeCallback = new TabLayoutOnPageChangeCallback(tabLayout);
+        onPageChangeCallback = new XTabLayoutOnPageChangeCallback(tabLayout);
         viewPager.registerOnPageChangeCallback(onPageChangeCallback);
 
         // Now we'll add a tab selected listener to set ViewPager's current item
@@ -111,7 +111,7 @@ public class XTabLayoutMediator {
     }
 
     /**
-     * Unlink the TabLayout and the ViewPager. To be called on a stale TabLayoutMediator if a new one
+     * Unlink the XTabLayout and the ViewPager. To be called on a stale XTabLayoutMediator if a new one
      * is instantiated, to prevent holding on to a view that should be garbage collected. Also to be
      * called before {@link #attach()} when a XViewPager's adapter is changed.
      */
@@ -135,7 +135,7 @@ public class XTabLayoutMediator {
         if (adapter != null) {
             int adapterCount = adapter.getItemCount();
             for (int i = 0; i < adapterCount; i++) {
-                TabLayout.Tab tab = tabLayout.newTab();
+                XTabLayout.Tab tab = tabLayout.newTab();
                 tabConfigurationStrategy.onConfigureTab(tab, i);
                 tabLayout.addTab(tab, false);
             }
@@ -152,19 +152,19 @@ public class XTabLayoutMediator {
 
     /**
      * A {@link ViewPager2.OnPageChangeCallback} class which contains the necessary calls back to the
-     * provided {@link TabLayout} so that the tab position is kept in sync.
+     * provided {@link XTabLayout} so that the tab position is kept in sync.
      *
-     * <p>This class stores the provided TabLayout weakly, meaning that you can use {@link
+     * <p>This class stores the provided XTabLayout weakly, meaning that you can use {@link
      * XViewPager#registerOnPageChangeCallback(ViewPager2.OnPageChangeCallback)} without removing the
      * callback and not cause a leak.
      */
-    private static class TabLayoutOnPageChangeCallback extends ViewPager2.OnPageChangeCallback {
+    private static class XTabLayoutOnPageChangeCallback extends ViewPager2.OnPageChangeCallback {
         @NonNull
-        private final WeakReference<TabLayout> tabLayoutRef;
+        private final WeakReference<XTabLayout> tabLayoutRef;
         private int previousScrollState;
         private int scrollState;
 
-        TabLayoutOnPageChangeCallback(TabLayout tabLayout) {
+        XTabLayoutOnPageChangeCallback(XTabLayout tabLayout) {
             tabLayoutRef = new WeakReference<>(tabLayout);
             reset();
         }
@@ -177,7 +177,7 @@ public class XTabLayoutMediator {
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            TabLayout tabLayout = tabLayoutRef.get();
+            XTabLayout tabLayout = tabLayoutRef.get();
             if (tabLayout != null) {
                 // Only update the text selection if we're not settling, or we are settling after
                 // being dragged
@@ -194,7 +194,7 @@ public class XTabLayoutMediator {
 
         @Override
         public void onPageSelected(final int position) {
-            TabLayout tabLayout = tabLayoutRef.get();
+            XTabLayout tabLayout = tabLayoutRef.get();
             if (tabLayout != null
                     && tabLayout.getSelectedTabPosition() != position
                     && position < tabLayout.getTabCount()) {
@@ -204,7 +204,7 @@ public class XTabLayoutMediator {
                         scrollState == ViewPager2.SCROLL_STATE_IDLE
                                 || (scrollState == ViewPager2.SCROLL_STATE_SETTLING
                                 && previousScrollState == ViewPager2.SCROLL_STATE_IDLE);
-                tabLayout.selectTab(tabLayout.getTabAt(position), updateIndicator);
+                tabLayout.selectTab(tabLayout.getTabAt(position), updateIndicator, true);
             }
         }
 
@@ -214,10 +214,10 @@ public class XTabLayoutMediator {
     }
 
     /**
-     * A {@link TabLayout.OnTabSelectedListener} class which contains the necessary calls back to the
+     * A {@link XTabLayout.OnTabSelectedListener} class which contains the necessary calls back to the
      * provided {@link XViewPager} so that the tab position is kept in sync.
      */
-    private static class ViewPagerOnTabSelectedListener implements TabLayout.OnTabSelectedListener {
+    private static class ViewPagerOnTabSelectedListener implements XTabLayout.OnTabSelectedListener {
         private final XViewPager viewPager;
 
         ViewPagerOnTabSelectedListener(XViewPager viewPager) {
@@ -225,17 +225,17 @@ public class XTabLayoutMediator {
         }
 
         @Override
-        public void onTabSelected(@NonNull TabLayout.Tab tab) {
+        public void onTabSelected(@NonNull XTabLayout.Tab tab) {
             viewPager.setCurrentItem(tab.getPosition(), true);
         }
 
         @Override
-        public void onTabUnselected(TabLayout.Tab tab) {
+        public void onTabUnselected(XTabLayout.Tab tab) {
             // No-op
         }
 
         @Override
-        public void onTabReselected(TabLayout.Tab tab) {
+        public void onTabReselected(XTabLayout.Tab tab) {
             // No-op
         }
     }
