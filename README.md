@@ -96,6 +96,10 @@ dependencies {
           </declare-styleable>
       </resources>
 ```
+###java 
+ XTabLayoutMediator(tabLayout,fragmentLayout,adapter).attach
+
+            XTabLayoutMediator:与TabLayout一起使用
 ### 2版本
 #### 1.0.5
     优化api
