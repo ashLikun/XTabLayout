@@ -1403,6 +1403,24 @@ public class XTabLayout extends HorizontalScrollView {
             return this;
         }
 
+        public TabView getView() {
+            return mView;
+        }
+
+        public ImageView getImageView() {
+            if (mView != null) {
+                return mView.getImageView();
+            }
+            return null;
+        }
+
+        public TextView getTextView() {
+            if (mView != null) {
+                return mView.getTextView();
+            }
+            return null;
+        }
+
         /**
          * Set a custom view to be used for this tab.
          * <p>
@@ -1931,6 +1949,22 @@ public class XTabLayout extends HorizontalScrollView {
          */
         private float approximateLineWidth(Layout layout, int line, float textSize) {
             return layout.getLineWidth(line) * (textSize / layout.getPaint().getTextSize());
+        }
+
+        public ImageView getImageView() {
+            if (mIconView != null) {
+                return mIconView;
+            } else {
+                return mCustomIconView;
+            }
+        }
+
+        public TextView getTextView() {
+            if (mTextView != null) {
+                return mTextView;
+            } else {
+                return mCustomTextView;
+            }
         }
     }
 
