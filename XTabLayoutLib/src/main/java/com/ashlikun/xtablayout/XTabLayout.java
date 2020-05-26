@@ -1952,18 +1952,18 @@ public class XTabLayout extends HorizontalScrollView {
         }
 
         public ImageView getImageView() {
-            if (mIconView != null) {
-                return mIconView;
-            } else {
+            if (mCustomIconView != null) {
                 return mCustomIconView;
+            } else {
+                return mIconView;
             }
         }
 
         public TextView getTextView() {
-            if (mTextView != null) {
-                return mTextView;
-            } else {
+            if (mCustomTextView != null) {
                 return mCustomTextView;
+            } else {
+                return mTextView;
             }
         }
     }
