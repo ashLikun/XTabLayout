@@ -2206,7 +2206,11 @@ public class XTabLayout extends HorizontalScrollView {
 
                 int haftWidth = 0;
                 if (xTabDividerWidthText) {
-                    mSelectedIndicatorWidth = mSelectedTab.getTextWidth();
+                    if (mSelectedTab != null) {
+                        mSelectedIndicatorWidth = mSelectedTab.getTextWidth();
+                    } else if (selectedTitle instanceof TabView) {
+                        mSelectedIndicatorWidth = ((TabView) selectedTitle).getTextWidth();
+                    }
                 } else if (mSelectedIndicatorWidth == 0) {
                     mSelectedIndicatorWidth = maxWidth;
                 }
