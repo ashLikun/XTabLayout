@@ -2068,7 +2068,7 @@ public class XTabLayout extends HorizontalScrollView {
 
             mSelectedPosition = position;
             mSelectionOffset = positionOffset;
-            updateIndicatorPosition(mSelectedPosition);
+            updateIndicatorPosition();
         }
 
         public float getIndicatorPosition() {
@@ -2193,27 +2193,35 @@ public class XTabLayout extends HorizontalScrollView {
                         Math.round((1f - mIndicatorAnimator.getAnimatedFraction()) * duration));
             } else {
                 // If we've been layed out, update the indicator position
-                updateIndicatorPosition(mSelectedPosition);
+                updateIndicatorPosition();
             }
         }
 
-        public void updateIndicatorPosition(int position) {
-            final View selectedTitle = getChildAt(position);
+        public int updateSelectedIndicatorWidth(int position) {
+            int width = mSelectedIndicatorWidth;
+            if (xTabDividerWidthText) {
+                position = mSelectionOffset > 0.5f ? position + 1 : position;
+                final View selectedTitle = getChildAt(position);
+                if (selectedTitle instanceof TabView) {
+                    width = ((TabView) selectedTitle).getTextWidth();
+                } else if (mSelectedTab != null) {
+                    width = mSelectedTab.getTextWidth();
+                }
+            } else if (width == 0) {
+                width = maxWidth;
+            }
+            return width;
+        }
+
+        public void updateIndicatorPosition() {
+            final View selectedTitle = getChildAt(mSelectedPosition);
             int left, right;
             if (selectedTitle != null && selectedTitle.getWidth() > 0) {
                 left = selectedTitle.getLeft();
                 right = selectedTitle.getRight();
-
+                mSelectedIndicatorWidth = updateSelectedIndicatorWidth(mSelectedPosition);
                 int haftWidth = 0;
-                if (xTabDividerWidthText) {
-                    if (mSelectedTab != null) {
-                        mSelectedIndicatorWidth = mSelectedTab.getTextWidth();
-                    } else if (selectedTitle instanceof TabView) {
-                        mSelectedIndicatorWidth = ((TabView) selectedTitle).getTextWidth();
-                    }
-                } else if (mSelectedIndicatorWidth == 0) {
-                    mSelectedIndicatorWidth = maxWidth;
-                }
+
                 if (mSelectedIndicatorWidth != 0) {
                     int maxWidth = mIndicatorRight - mIndicatorLeft;
                     if (maxWidth > mSelectedIndicatorWidth) {
@@ -2223,9 +2231,9 @@ public class XTabLayout extends HorizontalScrollView {
                     }
                 }
 
-                if (mSelectionOffset > 0f && position < getChildCount() - 1) {
+                if (mSelectionOffset > 0f && mSelectedPosition < getChildCount() - 1) {
                     // Draw the selection partway between the tabs
-                    View nextTitle = getChildAt(position + 1);
+                    View nextTitle = getChildAt(mSelectedPosition + 1);
                     int nextLeft = nextTitle.getLeft() + haftWidth;
                     int nextRight = nextTitle.getRight() - haftWidth;
                     left = (int) (mSelectionOffset * nextLeft +
@@ -2263,21 +2271,25 @@ public class XTabLayout extends HorizontalScrollView {
             final View targetView = getChildAt(position);
             if (targetView == null) {
                 // If we don't have a view, just update the position now and return
-                updateIndicatorPosition(mSelectedPosition);
+                updateIndicatorPosition();
                 return;
             }
-            if (xTabDividerWidthText) {
-                updateIndicatorPosition(position);
-            }
-            final int targetLeft = targetView.getLeft();
-            final int targetRight = targetView.getRight();
+
+            final int targetLeft;
+            final int targetRight;
             final int startLeft;
             final int startRight;
+            mSelectedIndicatorWidth = updateSelectedIndicatorWidth(position);
+
+            targetLeft = targetView.getLeft();
+            targetRight = targetView.getRight();
 
             if (Math.abs(position - mSelectedPosition) <= 1) {
                 // If the views are adjacent, we'll animate from edge-to-edge
                 startLeft = mIndicatorLeft;
                 startRight = mIndicatorRight;
+
+
             } else {
                 // Else, we'll just grow from the nearest edge
                 final int offset = dpToPx(MOTION_NON_ADJACENT_OFFSET);
@@ -2313,6 +2325,8 @@ public class XTabLayout extends HorizontalScrollView {
                     }
                 });
                 animator.addListener(new AnimatorListenerAdapter() {
+
+
                     @Override
                     public void onAnimationEnd(Animator animator) {
                         mSelectedPosition = position;
