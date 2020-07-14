@@ -2315,6 +2315,9 @@ public class XTabLayout extends HorizontalScrollView {
                     public void onAnimationEnd(Animator animator) {
                         mSelectedPosition = position;
                         mSelectionOffset = 0f;
+                        if (xTabDividerWidthText) {
+                            updateIndicatorPosition();
+                        }
                     }
                 });
                 animator.start();
