@@ -1,6 +1,7 @@
 package com.ashlikun.xtablayout.simple;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +26,12 @@ public class Fragment1 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         LinearLayout view = (LinearLayout) inflater.inflate(R.layout.fragment1, container, false);
+        view.setGravity(Gravity.CENTER_HORIZONTAL);
         DividerDrawable dividerDrawable = new DividerDrawable(getContext());
-        dividerDrawable.setDividerSize(2150, 50);
+        dividerDrawable.setDividerSize(50, 2100);
         dividerDrawable.setColor(0xffffff00);
         dividerDrawable.setGravity(DividerDrawable.CENTER);
-//        view.setDividerDrawable(dividerDrawable);
+        view.setDividerDrawable(dividerDrawable);
         return view;
     }
 }

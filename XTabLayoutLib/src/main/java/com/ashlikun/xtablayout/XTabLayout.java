@@ -33,6 +33,7 @@ import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -431,16 +432,7 @@ public class XTabLayout extends HorizontalScrollView {
     /**
      * Callback interface invoked when a tab's selection state changes.
      */
-    public interface OnTabSelectedListener extends BaseOnTabSelectedListener<Tab> {
-    }
-
-    /**
-     * Callback interface invoked when a tab's selection state changes.
-     *
-     * @deprecated Use {@link OnTabSelectedListener} instead.
-     */
-    @Deprecated
-    public interface BaseOnTabSelectedListener<T extends Tab> {
+    public interface OnTabSelectedListener<T extends Tab> {
         /**
          * Called when a tab enters the selected state.
          *
@@ -486,9 +478,12 @@ public class XTabLayout extends HorizontalScrollView {
 
     android.graphics.PorterDuff.Mode tabIconTintMode;
     float tabTextSize;
+    float tabSelectedTextSize = 0;
+    int tabTextMaxLines = 2;
     float tabTextMultiLineSize;
-
-    final int tabBackgroundResId;
+    private Boolean tabTextBold;
+    private Boolean tabTextSelectedBold;
+    Drawable tabBackground;
 
     int tabMaxWidth = Integer.MAX_VALUE;
     private final int requestedTabMinWidth;
@@ -504,11 +499,15 @@ public class XTabLayout extends HorizontalScrollView {
     int tabIndicatorGravity;
     @Mode
     int mode;
-
+    private int tabOneCountGravity;
     private int dividerWidth;
     private int dividerHeight;
     private int dividerColor;
     private int dividerGravity;
+    /**
+     * 图标与文字距离
+     */
+    private int iconAndTextSpace;
 
     boolean inlineLabel;
     boolean tabIndicatorFullWidth;
@@ -521,11 +520,11 @@ public class XTabLayout extends HorizontalScrollView {
     private TabIndicatorInterpolator tabIndicatorInterpolator;
 
     @Nullable
-    private BaseOnTabSelectedListener selectedListener;
+    private OnTabSelectedListener selectedListener;
 
-    private final ArrayList<BaseOnTabSelectedListener> selectedListeners = new ArrayList<>();
+    private final ArrayList<OnTabSelectedListener> selectedListeners = new ArrayList<>();
     @Nullable
-    private BaseOnTabSelectedListener currentVpSelectedListener;
+    private OnTabSelectedListener currentVpSelectedListener;
 
     private ValueAnimator scrollAnimator;
 
@@ -609,8 +608,16 @@ public class XTabLayout extends HorizontalScrollView {
                 a.getDimensionPixelSize(R.styleable.XTabLayout_xTabPaddingBottom, tabPaddingBottom);
 
         tabTextAppearance =
-                a.getResourceId(R.styleable.XTabLayout_xTabTextAppearance, R.style.TextAppearance_Design_Tab);
+                a.getResourceId(R.styleable.XTabLayout_xTabTextAppearance, R.style.TextAppearance_Design_XTab);
 
+        tabTextSize = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabTextSize, 0);
+        tabTextMaxLines = a.getInt(R.styleable.XTabLayout_xTabTextMaxLines, tabTextMaxLines);
+        if (a.hasValue(R.styleable.XTabLayout_xTabTextBold)) {
+            tabTextBold = a.getBoolean(R.styleable.XTabLayout_xTabTextBold, false);
+        }
+        if (a.hasValue(R.styleable.XTabLayout_xTabTextSelectedBold)) {
+            tabTextSelectedBold = a.getBoolean(R.styleable.XTabLayout_xTabTextSelectedBold, false);
+        }
         // Text colors/sizes come from the text appearance first
         final TypedArray ta =
                 context.obtainStyledAttributes(
@@ -627,7 +634,11 @@ public class XTabLayout extends HorizontalScrollView {
         } finally {
             ta.recycle();
         }
-
+        if (a.hasValue(R.styleable.XTabLayout_xTabSelectedTextSize)) {
+            tabSelectedTextSize = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabSelectedTextSize, 0);
+        } else {
+            tabSelectedTextSize = tabTextSize;
+        }
         if (a.hasValue(R.styleable.XTabLayout_xTabTextColor)) {
             // If we have an explicit text color set, use it instead
             tabTextColors =
@@ -657,10 +668,11 @@ public class XTabLayout extends HorizontalScrollView {
                 a.getDimensionPixelSize(R.styleable.XTabLayout_xTabMinWidth, INVALID_WIDTH);
         requestedTabMaxWidth =
                 a.getDimensionPixelSize(R.styleable.XTabLayout_xTabMaxWidth, INVALID_WIDTH);
-        tabBackgroundResId = a.getResourceId(R.styleable.XTabLayout_xTabBackground, 0);
+        tabBackground = MaterialResources.getDrawable(context, a, R.styleable.XTabLayout_xTabBackground);
         contentInsetStart = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabContentStart, 0);
         // noinspection WrongConstant
         mode = a.getInt(R.styleable.XTabLayout_xTabMode, MODE_AUTO);
+        tabOneCountGravity = a.getInt(R.styleable.XTabLayout_xTabOneCountGravity, Gravity.LEFT);
         tabGravity = a.getInt(R.styleable.XTabLayout_xTabGravity, GRAVITY_FILL);
         inlineLabel = a.getBoolean(R.styleable.XTabLayout_xTabInlineLabel, false);
         unboundedRipple = a.getBoolean(R.styleable.XTabLayout_xTabUnboundedRipple, false);
@@ -670,7 +682,7 @@ public class XTabLayout extends HorizontalScrollView {
         dividerHeight = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabDividerHeight, 0);
         dividerColor = a.getColor(R.styleable.XTabLayout_xTabDividerColor, Color.TRANSPARENT);
         dividerGravity = a.getInteger(R.styleable.XTabLayout_xTabDividerGravity, DividerDrawable.CENTER);
-
+        iconAndTextSpace = a.getDimensionPixelSize(R.styleable.XTabLayout_xTabIconAndTextSpace, (int) ViewUtils.dpToPx(getContext(), DEFAULT_GAP_TEXT_ICON));
         a.recycle();
 
         // TODO add attr for these
@@ -871,34 +883,6 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * @deprecated Use {@link #addOnTabSelectedListener(OnTabSelectedListener)} and {@link
-     * #removeOnTabSelectedListener(OnTabSelectedListener)}.
-     */
-    @Deprecated
-    public void setOnTabSelectedListener(@Nullable OnTabSelectedListener listener) {
-        setOnTabSelectedListener((BaseOnTabSelectedListener) listener);
-    }
-
-    /**
-     * @deprecated Use {@link #addOnTabSelectedListener(OnTabSelectedListener)} and {@link
-     * #removeOnTabSelectedListener(OnTabSelectedListener)}.
-     */
-    @Deprecated
-    public void setOnTabSelectedListener(@Nullable BaseOnTabSelectedListener listener) {
-        // The logic in this method emulates what we had before support for multiple
-        // registered listeners.
-        if (selectedListener != null) {
-            removeOnTabSelectedListener(selectedListener);
-        }
-        // Update the deprecated field so that we can remove the passed listener the next
-        // time we're called
-        selectedListener = listener;
-        if (listener != null) {
-            addOnTabSelectedListener(listener);
-        }
-    }
-
-    /**
      * Add a {@link XTabLayout.OnTabSelectedListener} that will be invoked when tab selection changes.
      *
      * <p>Components that add a listener should take care to remove it when finished via {@link
@@ -907,47 +891,15 @@ public class XTabLayout extends HorizontalScrollView {
      * @param listener listener to add
      */
     public void addOnTabSelectedListener(@NonNull OnTabSelectedListener listener) {
-        addOnTabSelectedListener((BaseOnTabSelectedListener) listener);
-    }
-
-    /**
-     * Add a {@link XTabLayout.BaseOnTabSelectedListener} that will be invoked when tab selection
-     * changes.
-     *
-     * <p>Components that add a listener should take care to remove it when finished via {@link
-     * #removeOnTabSelectedListener(BaseOnTabSelectedListener)}.
-     *
-     * @param listener listener to add
-     * @deprecated use {@link #addOnTabSelectedListener(OnTabSelectedListener)}
-     */
-    @Deprecated
-    public void addOnTabSelectedListener(@Nullable BaseOnTabSelectedListener listener) {
         if (!selectedListeners.contains(listener)) {
             selectedListeners.add(listener);
         }
     }
 
-    /**
-     * Remove the given {@link XTabLayout.OnTabSelectedListener} that was previously added via {@link
-     * #addOnTabSelectedListener(OnTabSelectedListener)}.
-     *
-     * @param listener listener to remove
-     */
     public void removeOnTabSelectedListener(@NonNull OnTabSelectedListener listener) {
-        removeOnTabSelectedListener((BaseOnTabSelectedListener) listener);
-    }
-
-    /**
-     * Remove the given {@link XTabLayout.BaseOnTabSelectedListener} that was previously added via
-     * {@link #addOnTabSelectedListener(BaseOnTabSelectedListener)}.
-     *
-     * @param listener listener to remove
-     * @deprecated use {@link #removeOnTabSelectedListener(OnTabSelectedListener)}
-     */
-    @Deprecated
-    public void removeOnTabSelectedListener(@Nullable BaseOnTabSelectedListener listener) {
         selectedListeners.remove(listener);
     }
+
 
     /**
      * Remove all previously added {@link XTabLayout.OnTabSelectedListener}s.
@@ -1586,16 +1538,6 @@ public class XTabLayout extends HorizontalScrollView {
         setupViewPagerImplicitly = implicitSetup;
     }
 
-    /**
-     * @deprecated Use {@link #setupWithViewPager(ViewPager)} to link a XTabLayout with a ViewPager
-     * together. When that method is used, the XTabLayout will be automatically updated when the
-     * {@link PagerAdapter} is changed.
-     */
-    @Deprecated
-    public void setTabsFromPagerAdapter(@Nullable final PagerAdapter adapter) {
-        setPagerAdapter(adapter, false);
-    }
-
     @Override
     public boolean shouldDelayChildPressedState() {
         // Only delay the pressed state if the tabs can scroll
@@ -2071,7 +2013,6 @@ public class XTabLayout extends HorizontalScrollView {
         ViewCompat.setPaddingRelative(slidingTabIndicator, paddingStart, 0, 0, 0);
 
         switch (mode) {
-            case MODE_AUTO:
             case MODE_FIXED:
                 if (tabGravity == GRAVITY_START) {
                     Log.w(
@@ -2081,6 +2022,7 @@ public class XTabLayout extends HorizontalScrollView {
                 }
                 slidingTabIndicator.setGravity(Gravity.CENTER_HORIZONTAL);
                 break;
+            case MODE_AUTO:
             case MODE_SCROLLABLE:
                 applyGravityForModeScrollable(tabGravity);
                 break;
@@ -2522,8 +2464,6 @@ public class XTabLayout extends HorizontalScrollView {
         @Nullable
         private Drawable baseBackgroundDrawable;
 
-        private int defaultMaxLines = 2;
-
         public TabView(@NonNull Context context) {
             super(context);
             updateBackgroundDrawable(context);
@@ -2534,18 +2474,21 @@ public class XTabLayout extends HorizontalScrollView {
             setClickable(true);
             ViewCompat.setPointerIcon(
                     this, PointerIconCompat.getSystemIcon(getContext(), PointerIconCompat.TYPE_HAND));
+            updateBaseBackgroundDrawable();
         }
 
-        private void updateBackgroundDrawable(Context context) {
-            if (tabBackgroundResId != 0) {
-                baseBackgroundDrawable = AppCompatResources.getDrawable(context, tabBackgroundResId);
-                if (baseBackgroundDrawable != null && baseBackgroundDrawable.isStateful()) {
-                    baseBackgroundDrawable.setState(getDrawableState());
+        private void updateBaseBackgroundDrawable() {
+            if (tabBackground != null) {
+                if (baseBackgroundDrawable == null) {
+                    baseBackgroundDrawable = DrawableCompat.wrap(tabBackground).mutate();
                 }
             } else {
                 baseBackgroundDrawable = null;
             }
+        }
 
+        private void updateBackgroundDrawable(Context context) {
+            updateBaseBackgroundDrawable();
             Drawable background;
             Drawable contentDrawable = new GradientDrawable();
             ((GradientDrawable) contentDrawable).setColor(Color.TRANSPARENT);
@@ -2568,8 +2511,16 @@ public class XTabLayout extends HorizontalScrollView {
             } else {
                 background = contentDrawable;
             }
-            ViewCompat.setBackground(this, background);
+            this.setBackground(background);
             XTabLayout.this.invalidate();
+        }
+
+        /**
+         * 设置自定义的背景
+         */
+        public void setBaseBackgroundDrawable(@Nullable Drawable baseBackgroundDrawable) {
+            this.baseBackgroundDrawable = baseBackgroundDrawable;
+            updateBaseBackgroundDrawable();
         }
 
         /**
@@ -2584,6 +2535,7 @@ public class XTabLayout extends HorizontalScrollView {
          */
         private void drawBackground(@NonNull Canvas canvas) {
             if (baseBackgroundDrawable != null) {
+                baseBackgroundDrawable.setState(getDrawableState());
                 baseBackgroundDrawable.setBounds(getLeft(), getTop(), getRight(), getBottom());
                 baseBackgroundDrawable.draw(canvas);
             }
@@ -2594,7 +2546,7 @@ public class XTabLayout extends HorizontalScrollView {
             super.drawableStateChanged();
             boolean changed = false;
             int[] state = getDrawableState();
-            if (baseBackgroundDrawable != null && baseBackgroundDrawable.isStateful()) {
+            if (baseBackgroundDrawable != null) {
                 changed |= baseBackgroundDrawable.setState(state);
             }
 
@@ -2634,6 +2586,18 @@ public class XTabLayout extends HorizontalScrollView {
             // changed
             if (textView != null) {
                 textView.setSelected(selected);
+                if (!selected) {
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, tabTextSize);
+                    if (tabTextBold != null) {
+                        textView.setTypeface(Typeface.defaultFromStyle(tabTextBold ? Typeface.BOLD : Typeface.NORMAL));
+                    }
+                }
+                if (changed && selected) {
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, tabSelectedTextSize);
+                    if (tabTextSelectedBold != null) {
+                        textView.setTypeface(Typeface.defaultFromStyle(tabTextSelectedBold ? Typeface.BOLD : Typeface.NORMAL));
+                    }
+                }
             }
             if (iconView != null) {
                 iconView.setSelected(selected);
@@ -2691,7 +2655,7 @@ public class XTabLayout extends HorizontalScrollView {
             // We need to switch the text size based on whether the text is spanning 2 lines or not
             if (textView != null) {
                 float textSize = tabTextSize;
-                int maxLines = defaultMaxLines;
+                int maxLines = tabTextMaxLines;
 
                 if (iconView != null && iconView.getVisibility() == VISIBLE) {
                     // If the icon view is being displayed, we limit the text to 1 line
@@ -2702,9 +2666,25 @@ public class XTabLayout extends HorizontalScrollView {
                 }
 
                 final float curTextSize = textView.getTextSize();
+                final Typeface curTypeface = textView.getTypeface();
                 final int curLineCount = textView.getLineCount();
                 final int curMaxLines = TextViewCompat.getMaxLines(textView);
-
+                if (textView.isSelected()) {
+                    textSize = tabSelectedTextSize;
+                }
+                Typeface newTypeface = null;
+                if (textView.isSelected()) {
+                    if (tabTextSelectedBold != null) {
+                        newTypeface = Typeface.defaultFromStyle(tabTextSelectedBold ? Typeface.BOLD : Typeface.NORMAL);
+                    }
+                } else {
+                    if (tabTextBold != null) {
+                        newTypeface = Typeface.defaultFromStyle(tabTextBold ? Typeface.BOLD : Typeface.NORMAL);
+                    }
+                }
+                if (curTypeface != newTypeface) {
+                    textView.setTypeface(newTypeface);
+                }
                 if (textSize != curTextSize || (curMaxLines >= 0 && maxLines != curMaxLines)) {
                     // We've got a new text size and/or max lines...
                     boolean updateTextView = true;
@@ -2766,9 +2746,6 @@ public class XTabLayout extends HorizontalScrollView {
                 }
 
                 customTextView = custom.findViewById(android.R.id.text1);
-                if (customTextView != null) {
-                    defaultMaxLines = TextViewCompat.getMaxLines(customTextView);
-                }
                 customIconView = custom.findViewById(android.R.id.icon);
             } else {
                 // We do not have a custom view. Remove one if it already exists
@@ -2787,7 +2764,6 @@ public class XTabLayout extends HorizontalScrollView {
                 }
                 if (this.textView == null) {
                     inflateAndAddDefaultTextView();
-                    defaultMaxLines = TextViewCompat.getMaxLines(this.textView);
                 }
                 TextViewCompat.setTextAppearance(this.textView, tabTextAppearance);
                 if (tabTextColors != null) {
@@ -2816,14 +2792,14 @@ public class XTabLayout extends HorizontalScrollView {
 
         private void inflateAndAddDefaultIconView() {
             ViewGroup iconViewParent = this;
-            this.iconView = (ImageView) LayoutInflater.from(getContext()).inflate(R.layout.design_layout_tab_icon, iconViewParent, false);
+            this.iconView = (ImageView) LayoutInflater.from(getContext()).inflate(R.layout.design_layout_xtab_icon, iconViewParent, false);
             iconViewParent.addView(iconView, 0);
         }
 
 
         private void inflateAndAddDefaultTextView() {
             ViewGroup textViewParent = this;
-            this.textView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.design_layout_tab_text, textViewParent, false);
+            this.textView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.design_layout_xtab_text, textViewParent, false);
             textViewParent.addView(textView);
         }
 
@@ -3003,22 +2979,21 @@ public class XTabLayout extends HorizontalScrollView {
 
             if (iconView != null) {
                 MarginLayoutParams lp = ((MarginLayoutParams) iconView.getLayoutParams());
-                int iconMargin = 0;
+                int bottomMargin = 0;
                 if (hasText && iconView.getVisibility() == VISIBLE) {
-                    // If we're showing both text and icon, add some margin bottom to the icon
-                    iconMargin = (int) ViewUtils.dpToPx(getContext(), DEFAULT_GAP_TEXT_ICON);
+                    bottomMargin = iconAndTextSpace;
                 }
                 if (inlineLabel) {
-                    if (iconMargin != MarginLayoutParamsCompat.getMarginEnd(lp)) {
-                        MarginLayoutParamsCompat.setMarginEnd(lp, iconMargin);
-                        lp.bottomMargin = 0;
+                    if (bottomMargin != MarginLayoutParamsCompat.getMarginEnd(lp)) {
+                        MarginLayoutParamsCompat.setMarginEnd(lp, bottomMargin);
+                        lp.bottomMargin = bottomMargin;
                         // Calls resolveLayoutParams(), necessary for layout direction
                         iconView.setLayoutParams(lp);
                         iconView.requestLayout();
                     }
                 } else {
-                    if (iconMargin != lp.bottomMargin) {
-                        lp.bottomMargin = iconMargin;
+                    if (bottomMargin != lp.bottomMargin) {
+                        lp.bottomMargin = bottomMargin;
                         MarginLayoutParamsCompat.setMarginEnd(lp, 0);
                         // Calls resolveLayoutParams(), necessary for layout direction
                         iconView.setLayoutParams(lp);
@@ -3179,7 +3154,10 @@ public class XTabLayout extends HorizontalScrollView {
                 // EXACTLY. Ignore the first call since anything we do will be overwritten anyway
                 return;
             }
-
+            //一个的时候特殊处理
+            if (getChildCount() == 1) {
+                setGravity(tabOneCountGravity);
+            }
             // GRAVITY_CENTER will make all tabs the same width as the largest tab, and center them in the
             // SlidingTabIndicator's width (with a "gutter" of padding on either side). If the Tabs do not
             // fit in the SlidingTabIndicator, then fall back to GRAVITY_FILL behavior.
@@ -3200,14 +3178,13 @@ public class XTabLayout extends HorizontalScrollView {
                     return;
                 }
                 //加上分割线
-                if (getDividerDrawable() != null && getDividerDrawable() instanceof DividerDrawable) {
-                    DividerDrawable dividerDrawable = (DividerDrawable) getDividerDrawable();
+                if (getDividerDrawable() != null) {
+                    Drawable dividerDrawable = getDividerDrawable();
                     allTabWidth += dividerDrawable.getIntrinsicWidth() * (count - 1);
                 }
 
 //                final int gutter = (int) ViewUtils.dpToPx(getContext(), FIXED_WRAP_GUTTER_MIN);
                 boolean remeasure = false;
-
                 if (allTabWidth < getValidWidth()) {
                     if (getChildCount() != 1) {
                         setGravity(Gravity.CENTER);
@@ -3510,6 +3487,33 @@ public class XTabLayout extends HorizontalScrollView {
         dividerGravity = gravity;
         addDivider();
 
+    }
+
+    /**
+     * 一条数据时候的对齐方式
+     */
+    public void setTabGravityOneCount(@XTabLayout.TabGravity int gravity) {
+        if (tabOneCountGravity != gravity) {
+            tabOneCountGravity = gravity;
+            applyModeAndGravity();
+        }
+    }
+
+    public int getTabOneCountGravity() {
+        return tabOneCountGravity;
+    }
+
+    /**
+     * 设置Item背景
+     */
+    public void setTabBackground(Drawable tabBackground) {
+        this.tabBackground = tabBackground;
+        for (int i = 0; i < slidingTabIndicator.getChildCount(); i++) {
+            View tabView = slidingTabIndicator.getChildAt(i);
+            if (tabView instanceof TabView) {
+                ((TabView) tabView).setBaseBackgroundDrawable(tabBackground);
+            }
+        }
     }
 
     /**

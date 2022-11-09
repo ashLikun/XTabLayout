@@ -24,8 +24,6 @@
         app:xTabIndicatorColor="#0f0"
         app:xTabIndicatorHeight="2dp"
         app:xTabIndicatorWidth="10dp"
-        app:xTabItemBackground="#00000000"
-        app:xTabItemSelectedBackground="@drawable/aaaaaaaaa"
         app:xTabMode="fixed"
         app:xTabSelectedTextColor="#f00"
         app:xTabSelectedTextSize="25sp"

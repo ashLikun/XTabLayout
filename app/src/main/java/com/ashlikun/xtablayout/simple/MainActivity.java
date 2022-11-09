@@ -7,8 +7,6 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.ashlikun.xtablayout.XTabLayout;
-import com.ashlikun.xtablayout.XTabLayoutMediator;
-import com.ashlikun.xtablayout.XTabLayoutOld;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -28,10 +26,12 @@ public class MainActivity extends AppCompatActivity {
     private void initViewPager() {
         List<String> titles = new ArrayList<>();
         titles.add("全部");
-        titles.add("待付款2222");
-        titles.add("待使用a");
+        titles.add("待付款");
+        titles.add("待使用aa");
+//        titles.add("待使用");
+//        titles.add("待使用");
+//        titles.add("待使用");
 
-        new XTabLayoutMediator(null, null, null);
 
         for (int i = 0; i < titles.size(); i++) {
             if (i % 2 == 0) {
@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         final XTabLayout xtabLayout2 = (XTabLayout) findViewById(R.id.xtabLayout2);
         xtabLayout2.setupWithViewPager(viewPager);
-        final XTabLayoutOld xtabLayoutold2 = (XTabLayoutOld) findViewById(R.id.xtabLayoutold2);
-        xtabLayoutold2.setupWithViewPager(viewPager);
+//        final XTabLayoutOld xtabLayoutold2 = (XTabLayoutOld) findViewById(R.id.xtabLayoutold2);
+//        xtabLayoutold2.setupWithViewPager(viewPager);
 
     }
 }

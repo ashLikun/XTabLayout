@@ -8,12 +8,12 @@
         <!--指示器颜色-->
         <attr name="xTabIndicatorColor" format="color" />
         <!--指示器的资源-->
-        <attr name="xTabIndicatorDrawable" format="reference" />
+        <attr name="xTabIndicator" format="reference" />
         <!--指示器宽度和字体一样-->
         <attr name="xTabIndicatorWidthWidthText" format="boolean" />
-        <!--     是否将选择指示器的宽度贴合到全宽度   -->
+        <!--是否将选择指示器的宽度贴合到全宽度   -->
         <attr name="xTabIndicatorFullWidth" format="boolean" />
-        <!--分割线对齐方式-->
+        <!--指示器对齐方式-->
         <attr name="xTabIndicatorGravity">
             <!-- Align indicator to the bottom of this tab layout. -->
             <enum name="bottom" value="0" />
@@ -40,10 +40,8 @@
         <attr name="xTabMinWidth" format="dimension" />
         <!--最大宽度-->
         <attr name="xTabMaxWidth" format="dimension" />
-        <!--item背景色-->
-        <attr name="xTabItemBackground" format="reference|color" />
-        <!--item选中的背景色-->
-        <attr name="xTabItemSelectedBackground" format="reference|color" />
+        <!--item背景 可以有选中的状态-->
+        <attr name="xTabBackground" format="reference|color" />
         <!--内容前面边距-->
         <attr name="xTabContentStart" format="dimension" />
         <!--排版模式-->
@@ -84,8 +82,7 @@
             <enum name="center" value="0x00000001" />
             <enum name="bottom" value="0x00000002" />
         </attr>
-        <!--分割线的资源-->
-        <attr name="xTabIndicator" format="reference" />
+
         <!--图标与文字的距离-->
         <attr name="xTabIconAndTextSpace" format="dimension" />
 
@@ -116,7 +113,6 @@
 
         <attr name="xTabUnboundedRipple" format="boolean" />
         <attr name="xTabIndicatorAnimationDuration" format="integer" />
-        <attr name="xTabBackground" format="reference" />
 
 
         <attr name="xTabGravity">
@@ -127,6 +123,13 @@
 
         <attr name="xTabInlineLabel" format="boolean" />
     </declare-styleable>
+
+    <style name="TextAppearance.Design.XTab" parent="TextAppearance.AppCompat.Button">
+        <item name="android:textSize">@dimen/design_tab_text_size</item>
+        <item name="android:textColor">@color/mtrl_tabs_legacy_text_color_selector</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textStyle">normal</item>
+    </style>
 
     <style name="Base.Widget.Design.XTabLayout" parent="android:Widget">
         <item name="android:background">@null</item>
@@ -140,7 +143,7 @@
         <item name="xTabIndicator">@drawable/mtrl_tabs_default_indicator</item>
         <item name="xTabPaddingStart">12dp</item>
         <item name="xTabPaddingEnd">12dp</item>
-        <item name="xTabTextAppearance">@style/TextAppearance.Design.Tab</item>
+        <item name="xTabTextAppearance">@style/TextAppearance.Design.XTab</item>
         <item name="xTabTextColor">@null</item>
         <item name="xTabRippleColor">?attr/colorControlHighlight</item>
         <item name="xTabUnboundedRipple">false</item>

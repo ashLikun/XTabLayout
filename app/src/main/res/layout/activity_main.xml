@@ -55,34 +55,39 @@
         app:tabMode="auto"
         app:tabPadding="0dp"
         app:tabSelectedTextColor="@color/colorPrimary"
-        app:tabTextColor="#333333" />
+        app:tabTextColor="#333333"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <com.ashlikun.xtablayout.XTabLayout
         android:id="@+id/xtabLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#ffffff"
-        app:xTabDividerWidth="20dp"
+        app:xTabBackground="@drawable/ssss"
         app:xTabDividerColor="@color/colorPrimary"
-        app:xTabIndicatorColor="@color/colorPrimary"
+        app:xTabGravity="start"
+        app:xTabIndicatorColor="#ff0000"
+        app:xTabTextBold="false"
+        app:xTabTextSelectedBold="true"
         app:xTabIndicatorWidth="10dp"
         app:xTabMode="auto"
         app:xTabSelectedTextColor="@color/colorPrimary"
         app:xTabTextColor="#333333" />
 
-    <com.ashlikun.xtablayout.XTabLayoutOld
-        android:id="@+id/xtabLayoutold2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ffffff"
-        app:xTabDividerWidth="20dp"
-        app:xTabIndicatorColor="@color/colorPrimary"
-        app:xTabIndicatorWidthWidthText="false"
-        app:xTabIndicatorWidth="10dp"
-        app:xTabMode="auto"
-        app:xTabPadding="0dp"
-        app:xTabSelectedTextColor="@color/colorPrimary"
-        app:xTabTextColor="#333333" />
+<!--    <com.ashlikun.xtablayout.XTabLayoutOld-->
+<!--        android:id="@+id/xtabLayoutold2"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="#ffffff"-->
+<!--        app:xTabBackground="@drawable/ssss"-->
+<!--        app:xTabDividerWidth="20dp"-->
+<!--        app:xTabIndicatorColor="@color/colorPrimary"-->
+<!--        app:xTabIndicatorWidth="10dp"-->
+<!--        app:xTabIndicatorWidthWidthText="false"-->
+<!--        app:xTabMode="auto"-->
+<!--        app:xTabPadding="0dp"-->
+<!--        app:xTabSelectedTextColor="@color/colorPrimary"-->
+<!--        app:xTabTextColor="#333333" />-->
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
