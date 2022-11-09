@@ -17,7 +17,7 @@ import android.graphics.drawable.Drawable;
  * 功能介绍：
  */
 
-class DividerDrawable extends Drawable {
+public class DividerDrawable extends Drawable {
 
     private Paint paint;
     private RectF rectF;
@@ -81,12 +81,13 @@ class DividerDrawable extends Drawable {
     public void setDividerSize(int width, int height) {
         this.width = width;
         this.height = height;
+        setBounds(0, 0, width, height);
         invalidateSelf();
     }
 
     @Override
     public int getIntrinsicHeight() {
-        return super.getIntrinsicHeight();
+        return height;
     }
 
 

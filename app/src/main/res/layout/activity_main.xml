@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
     <!--<com.ashlikun.xtablayout.XTabLayout-->
-    <!--android:id="@+id/xTablayout"-->
+    <!--android:id="@+id/tablayout"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="wrap_content"-->
     <!--android:layout_centerHorizontal="true"-->
@@ -24,37 +24,66 @@
     <!--app:xTabTextColor="#000000"-->
     <!--app:xTabTextSize="18dp" />-->
 
-<!--    <com.ashlikun.xtablayout.XTabLayout-->
-<!--        android:id="@+id/tabLayout2"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:background="#ffffff"-->
-<!--        android:paddingLeft="10dp"-->
-<!--        android:paddingRight="10dp"-->
-<!--        app:xTabDividerWidth="0dp"-->
-<!--        app:xTabIndicatorColor="@color/colorPrimary"-->
-<!--        app:xTabIndicatorGravity="top"-->
-<!--        app:xTabIndicatorWidthWidthText="true"-->
-<!--        app:xTabMinWidth="5dp"-->
-<!--        app:xTabMode="auto"-->
-<!--        app:xTabOneCountGravity="right"-->
-<!--        app:xTabPadding="0dp"-->
-<!--        app:xTabSelectedTextColor="@color/colorPrimary"-->
-<!--        app:xTabTextColor="#000000"-->
-<!--        app:xTabTextSize="14dp" />-->
-    <com.ashlikun.xtablayout.XTabLayout
+    <!--    <com.ashlikun.xtablayout.XTabLayout-->
+    <!--        android:id="@+id/tabLayout2"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:background="#ffffff"-->
+    <!--        android:paddingLeft="10dp"-->
+    <!--        android:paddingRight="10dp"-->
+    <!--        app:xTabDividerWidth="0dp"-->
+    <!--        app:xTabIndicatorColor="@color/colorPrimary"-->
+    <!--        app:xTabIndicatorGravity="top"-->
+    <!--        app:xTabIndicatorWidthWidthText="true"-->
+    <!--        app:xTabMinWidth="5dp"-->
+    <!--        app:xTabMode="auto"-->
+    <!--        app:xTabOneCountGravity="right"-->
+    <!--        app:xTabPadding="0dp"-->
+    <!--        app:xTabSelectedTextColor="@color/colorPrimary"-->
+    <!--        app:xTabTextColor="#000000"-->
+    <!--        app:xTabTextSize="14dp" />-->
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#ffffff"
-        app:xTabDividerWidth="10dp"
+        app:tabGravity="fill"
+        app:tabIndicatorColor="@color/colorPrimary"
+        app:tabIndicatorFullWidth="false"
+        app:tabIndicatorHeight="2dp"
+        app:tabMinWidth="50dp"
+        app:tabMode="auto"
+        app:tabPadding="0dp"
+        app:tabSelectedTextColor="@color/colorPrimary"
+        app:tabTextColor="#333333" />
+
+    <com.ashlikun.xtablayout.XTabLayout
+        android:id="@+id/xtabLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        app:xTabDividerWidth="20dp"
+        app:xTabDividerColor="@color/colorPrimary"
         app:xTabIndicatorColor="@color/colorPrimary"
-        app:xTabIndicatorWidthWidthText="true"
-        app:xTabMinWidth="50dp"
+        app:xTabIndicatorWidth="10dp"
+        app:xTabMode="auto"
+        app:xTabSelectedTextColor="@color/colorPrimary"
+        app:xTabTextColor="#333333" />
+
+    <com.ashlikun.xtablayout.XTabLayoutOld
+        android:id="@+id/xtabLayoutold2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        app:xTabDividerWidth="20dp"
+        app:xTabIndicatorColor="@color/colorPrimary"
+        app:xTabIndicatorWidthWidthText="false"
+        app:xTabIndicatorWidth="10dp"
         app:xTabMode="auto"
         app:xTabPadding="0dp"
         app:xTabSelectedTextColor="@color/colorPrimary"
         app:xTabTextColor="#333333" />
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"

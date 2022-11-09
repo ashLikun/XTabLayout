@@ -1,8 +1,9 @@
 package com.ashlikun.xtablayout.simple;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.ashlikun.xtablayout.XTabLayout;
 
@@ -24,7 +25,7 @@ public class MainActivity2 extends AppCompatActivity implements XTabLayout.OnTab
         titles.add("第一");
         titles.add("第二第二");
         titles.add("第三");
-        final XTabLayout tabLayout = findViewById(R.id.xTablayout);
+        final XTabLayout tabLayout = findViewById(R.id.tablayout);
         final XTabLayout tabLayout2 = findViewById(R.id.tabLayout2);
         tabLayout.addOnTabSelectedListener(this);
         //将TabLayout和ViewPager关联起来。

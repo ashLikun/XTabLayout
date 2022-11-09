@@ -11,12 +11,20 @@
         <attr name="xTabIndicatorDrawable" format="reference" />
         <!--指示器宽度和字体一样-->
         <attr name="xTabIndicatorWidthWidthText" format="boolean" />
+        <!--     是否将选择指示器的宽度贴合到全宽度   -->
+        <attr name="xTabIndicatorFullWidth" format="boolean" />
         <!--分割线对齐方式-->
         <attr name="xTabIndicatorGravity">
-            <enum name="top" value="0x00000000" />
-            <enum name="bottom" value="0x00000002" />
+            <!-- Align indicator to the bottom of this tab layout. -->
+            <enum name="bottom" value="0" />
+            <!-- Align indicator along the center of this tab layout. -->
+            <enum name="center" value="1" />
+            <!-- Align indicator to the top of this tab layout. -->
+            <enum name="top" value="2" />
+            <!-- Stretch indicator to match the height and width of a tab item in this layout. -->
+            <enum name="stretch" value="3" />
         </attr>
-        <!--内边距,每个tab边距-->
+        <!--内边距,每个xTab边距-->
         <attr name="xTabPadding" format="dimension" />
         <attr name="xTabPaddingStart" format="dimension" />
         <attr name="xTabPaddingTop" format="dimension" />
@@ -76,7 +84,71 @@
             <enum name="center" value="0x00000001" />
             <enum name="bottom" value="0x00000002" />
         </attr>
+        <!--分割线的资源-->
+        <attr name="xTabIndicator" format="reference" />
         <!--图标与文字的距离-->
         <attr name="xTabIconAndTextSpace" format="dimension" />
+
+
+        <attr name="xTabIndicatorAnimationMode">
+            <!-- 动画选择指示器的左右边界与对方。 -->
+            <enum name="linear" value="0" />
+            <!-- 动画选择指示器的左右边界不同步
+                相互配合，前面减速，后面加速。
+                这使得指示器看起来像是在目的地之间延伸
+                然后缩小到适合它的目标选项卡的大小。-->
+            <enum name="elastic" value="1" />
+            <!-- 通过将选择指示器依次淡出使其动画化 它的当前目的地，然后在新的目的地。 -->
+            <enum name="fade" value="2" />
+        </attr>
+
+        <attr name="xTabIconTint" format="color" />
+
+        <attr name="xTabIconTintMode">
+            <enum name="src_over" value="3" />
+            <enum name="src_in" value="5" />
+            <enum name="src_atop" value="9" />
+            <enum name="multiply" value="14" />
+            <enum name="screen" value="15" />
+            <enum name="add" value="16" />
+        </attr>
+        <attr name="xTabRippleColor" format="color" />
+
+        <attr name="xTabUnboundedRipple" format="boolean" />
+        <attr name="xTabIndicatorAnimationDuration" format="integer" />
+        <attr name="xTabBackground" format="reference" />
+
+
+        <attr name="xTabGravity">
+            <enum name="fill" value="0" />
+            <enum name="center" value="1" />
+            <enum name="start" value="2" />
+        </attr>
+
+        <attr name="xTabInlineLabel" format="boolean" />
     </declare-styleable>
+
+    <style name="Base.Widget.Design.XTabLayout" parent="android:Widget">
+        <item name="android:background">@null</item>
+        <item name="xTabIconTint">@null</item>
+        <item name="xTabMaxWidth">@dimen/design_tab_max_width</item>
+        <item name="xTabIndicatorAnimationDuration">@integer/design_tab_indicator_anim_duration_ms
+        </item>
+        <item name="xTabIndicatorColor">?attr/colorAccent</item>
+        <item name="xTabIndicatorGravity">bottom</item>
+        <item name="xTabIndicatorAnimationMode">linear</item>
+        <item name="xTabIndicator">@drawable/mtrl_tabs_default_indicator</item>
+        <item name="xTabPaddingStart">12dp</item>
+        <item name="xTabPaddingEnd">12dp</item>
+        <item name="xTabTextAppearance">@style/TextAppearance.Design.Tab</item>
+        <item name="xTabTextColor">@null</item>
+        <item name="xTabRippleColor">?attr/colorControlHighlight</item>
+        <item name="xTabUnboundedRipple">false</item>
+    </style>
+
+    <style name="Widget.Design.XTabLayout" parent="Base.Widget.Design.XTabLayout">
+        <item name="xTabGravity">fill</item>
+        <item name="xTabMode">fixed</item>
+        <item name="xTabIndicatorFullWidth">true</item>
+    </style>
 </resources>

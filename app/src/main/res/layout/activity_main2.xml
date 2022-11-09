@@ -14,7 +14,7 @@
         android:text="测试" />
 
     <com.ashlikun.xtablayout.XTabLayout
-        android:id="@+id/xTablayout"
+        android:id="@+id/tablayout"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:background="#888888"

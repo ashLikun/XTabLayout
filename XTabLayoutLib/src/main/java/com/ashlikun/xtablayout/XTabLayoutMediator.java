@@ -17,7 +17,7 @@ import java.lang.ref.WeakReference;
  * 创建时间: 2020/5/12　16:41
  * 邮箱　　：496546144@qq.com
  * <p>
- * 功能介绍：XXTabLayout与XViewPager（v2）一起使用
+ * 功能介绍：XTabLayout与XViewPager（v2）一起使用
  */
 public class XTabLayoutMediator {
     @NonNull
@@ -226,7 +226,7 @@ public class XTabLayoutMediator {
                         scrollState == ViewPager2.SCROLL_STATE_IDLE
                                 || (scrollState == ViewPager2.SCROLL_STATE_SETTLING
                                 && previousScrollState == ViewPager2.SCROLL_STATE_IDLE);
-                tabLayout.selectTab(tabLayout.getTabAt(position), updateIndicator, true);
+                tabLayout.selectTab(tabLayout.getTabAt(position), updateIndicator);
             }
         }
 

@@ -32,63 +32,63 @@ dependencies {
       <resources>
           <declare-styleable name="XTabLayout">
               <!--指示器高度-->
-              <attr name="xTabIndicatorHeight" format="dimension" />
+              <attr name="tabIndicatorHeight" format="dimension" />
               <!--指示器宽度-->
-              <attr name="xTabIndicatorWidth" format="dimension" />
+              <attr name="tabIndicatorWidth" format="dimension" />
               <!--指示器颜色-->
-              <attr name="xTabIndicatorColor" format="color" />
+              <attr name="tabIndicatorColor" format="color" />
               <!--指示器宽度和字体一样-->
-              <attr name="xTabIndicatorWidthWidthText" format="boolean" />
+              <attr name="tabIndicatorWidthWidthText" format="boolean" />
               <!--内边距-->
-              <attr name="xTabPadding" format="dimension" />
-              <attr name="xTabPaddingStart" format="dimension" />
-              <attr name="xTabPaddingTop" format="dimension" />
-              <attr name="xTabPaddingEnd" format="dimension" />
-              <attr name="xTabPaddingBottom" format="dimension" />
+              <attr name="tabPadding" format="dimension" />
+              <attr name="tabPaddingStart" format="dimension" />
+              <attr name="tabPaddingTop" format="dimension" />
+              <attr name="tabPaddingEnd" format="dimension" />
+              <attr name="tabPaddingBottom" format="dimension" />
               <!--文字的属性-->
-              <attr name="xTabTextAppearance" format="reference" />
+              <attr name="tabTextAppearance" format="reference" />
               <!--文字默认颜色-->
-              <attr name="xTabTextColor" format="color" />
+              <attr name="tabTextColor" format="color" />
               <!--文字选择颜色-->
-              <attr name="xTabSelectedTextColor" format="color" />
+              <attr name="tabSelectedTextColor" format="color" />
               <!--最小宽度-->
-              <attr name="xTabMinWidth" format="dimension" />
+              <attr name="tabMinWidth" format="dimension" />
               <!--最大宽度-->
-              <attr name="xTabMaxWidth" format="dimension" />
+              <attr name="tabMaxWidth" format="dimension" />
               <!--item背景色-->
-              <attr name="xTabItemBackground" format="reference|color" />
+              <attr name="tabItemBackground" format="reference|color" />
               <!--item选中的背景色-->
-              <attr name="xTabItemSelectedBackground" format="reference|color" />
+              <attr name="tabItemSelectedBackground" format="reference|color" />
               <!--内容前面边距-->
-              <attr name="xTabContentStart" format="dimension" />
+              <attr name="tabContentStart" format="dimension" />
               <!--排版模式-->
-              <attr name="xTabMode">
+              <attr name="tabMode">
                   <enum name="scrollable" value="0x00000000" />
                   <enum name="fixed" value="0x00000001" />
                   <enum name="auto" value="0x00000002" />
               </attr>
               <!--对齐方式-->
-              <attr name="xTabGravity" format="integer" />
+              <attr name="tabGravity" format="integer" />
               <!--文字大小-->
-              <attr name="xTabTextSize" format="dimension" />
+              <attr name="tabTextSize" format="dimension" />
               <!--文字加粗-->
-              <attr name="xTabTextBold" format="boolean" />
+              <attr name="tabTextBold" format="boolean" />
               <!--选中文字大小-->
-              <attr name="xTabSelectedTextSize" format="dimension" />
+              <attr name="tabSelectedTextSize" format="dimension" />
               <!--选中文字加粗-->
-              <attr name="xTabTextSelectedBold" format="boolean" />
+              <attr name="tabTextSelectedBold" format="boolean" />
               <!--一页显示几个item（当N个内容没有一屏的时候有效）-->
-              <attr name="xTabDisplayNum" format="integer" />
+              <attr name="tabDisplayNum" format="integer" />
               <!--文本字母是否小写转大写-->
-              <attr name="xTabTextAllCaps" format="boolean" />
+              <attr name="tabTextAllCaps" format="boolean" />
               <!--分割线高度-->
-              <attr name="xTabDividerHeight" format="dimension" />
+              <attr name="tabDividerHeight" format="dimension" />
               <!--分割线宽度-->
-              <attr name="xTabDividerWidth" format="dimension" />
+              <attr name="tabDividerWidth" format="dimension" />
               <!--分割线颜色-->
-              <attr name="xTabDividerColor" format="color" />
+              <attr name="tabDividerColor" format="color" />
               <!--分割线对齐方式-->
-              <attr name="xTabDividerGravity">
+              <attr name="tabDividerGravity">
                   <enum name="top" value="0x00000000" />
                   <enum name="center" value="0x00000001" />
                   <enum name="bottom" value="0x00000002" />

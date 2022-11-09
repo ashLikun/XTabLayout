@@ -8,6 +8,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.ashlikun.xtablayout.XTabLayout;
 import com.ashlikun.xtablayout.XTabLayoutMediator;
+import com.ashlikun.xtablayout.XTabLayoutOld;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private void initViewPager() {
         List<String> titles = new ArrayList<>();
         titles.add("全部");
-        titles.add("待付款");
-        titles.add("待使用");
+        titles.add("待付款2222");
+        titles.add("待使用a");
 
         new XTabLayoutMediator(null, null, null);
 
@@ -43,8 +45,12 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adatper);
         viewPager.setOffscreenPageLimit(4);
         //将TabLayout和ViewPager关联起来。
-        final XTabLayout tabLayout = (XTabLayout) findViewById(R.id.tabLayout2);
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout2);
         tabLayout.setupWithViewPager(viewPager);
+        final XTabLayout xtabLayout2 = (XTabLayout) findViewById(R.id.xtabLayout2);
+        xtabLayout2.setupWithViewPager(viewPager);
+        final XTabLayoutOld xtabLayoutold2 = (XTabLayoutOld) findViewById(R.id.xtabLayoutold2);
+        xtabLayoutold2.setupWithViewPager(viewPager);
 
     }
 }
