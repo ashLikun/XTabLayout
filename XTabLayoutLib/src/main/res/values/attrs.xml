@@ -133,7 +133,6 @@
 
     <style name="XTabLayout" parent="android:Widget">
         <item name="xTabIconTint">@null</item>
-        <item name="android:background">#00000000</item>
         <item name="xTabMaxWidth">@dimen/design_tab_max_width</item>
         <item name="xTabIndicatorAnimationDuration">@integer/design_tab_indicator_anim_duration_ms
         </item>
@@ -150,7 +149,6 @@
     </style>
 
     <style name="XTabLayout.Default" parent="XTabLayout">
-        <item name="android:background">#ffff0000</item>
         <item name="xTabGravity">fill</item>
         <item name="xTabMode">fixed</item>
         <item name="xTabIndicatorFullWidth">true</item>

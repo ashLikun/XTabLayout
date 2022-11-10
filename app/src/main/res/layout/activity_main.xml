@@ -61,6 +61,7 @@
     <com.ashlikun.xtablayout.XTabLayout
         android:id="@+id/xtabLayout2"
         android:layout_width="match_parent"
+        android:background="#ffffff"
         android:layout_height="wrap_content"
         app:xTabIndicatorColor="@color/colorPrimary"
         app:xTabIndicatorWidthWidthText="true"

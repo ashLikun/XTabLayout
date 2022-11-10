@@ -572,7 +572,9 @@ public class XTabLayout extends HorizontalScrollView {
 //                defStyleAttr,
 //                DEF_STYLE_RES,
 //                R.styleable.XTabLayout_xTabTextAppearance);
-
+        if (getBackground() == null) {
+            setBackground(new ColorDrawable(0));
+        }
         if (getBackground() instanceof ColorDrawable) {
             ColorDrawable background = (ColorDrawable) getBackground();
             MaterialShapeDrawable materialShapeDrawable = new MaterialShapeDrawable();
