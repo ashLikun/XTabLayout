@@ -184,7 +184,7 @@ import java.util.Iterator;
 @ViewPager.DecorView
 public class XTabLayout extends HorizontalScrollView {
 
-    private static final int DEF_STYLE_RES = R.style.Widget_Design_XTabLayout;
+    private static final int DEF_STYLE_RES = R.style.XTabLayout_Default;
 
     @Dimension(unit = Dimension.DP)
     private static final int DEFAULT_HEIGHT_WITH_TEXT_ICON = 72;
@@ -548,7 +548,7 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     public XTabLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(wrap(context, attrs, defStyleAttr, DEF_STYLE_RES), attrs, defStyleAttr);
+        super(wrap(context, attrs, 0, DEF_STYLE_RES), attrs, 0);
         // Ensure we are using the correctly themed context rather than the context that was passed in.
         context = getContext();
 
@@ -564,14 +564,14 @@ public class XTabLayout extends HorizontalScrollView {
                         LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
 
         //context.obtainStyledAttributes(attrs,  R.styleable.XTabLayout, defStyleAttr, DEF_STYLE_RES)
-        TypedArray a = context.obtainStyledAttributes(attrs,  R.styleable.XTabLayout, defStyleAttr, DEF_STYLE_RES);
-//                ThemeEnforcement.obtainStyledAttributes(
-//                        context,
-//                        attrs,
-//                        R.styleable.XTabLayout,
-//                        defStyleAttr,
-//                        DEF_STYLE_RES,
-//                        R.styleable.XTabLayout_xTabTextAppearance);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.XTabLayout, 0, DEF_STYLE_RES);
+//        TypedArray a = ThemeEnforcement.obtainStyledAttributes(
+//                context,
+//                attrs,
+//                R.styleable.XTabLayout,
+//                defStyleAttr,
+//                DEF_STYLE_RES,
+//                R.styleable.XTabLayout_xTabTextAppearance);
 
         if (getBackground() instanceof ColorDrawable) {
             ColorDrawable background = (ColorDrawable) getBackground();

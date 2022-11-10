@@ -131,13 +131,13 @@
         <item name="android:textStyle">normal</item>
     </style>
 
-    <style name="Base.Widget.Design.XTabLayout" parent="android:Widget">
-        <item name="android:background">@null</item>
+    <style name="XTabLayout" parent="android:Widget">
         <item name="xTabIconTint">@null</item>
+        <item name="android:background">#00000000</item>
         <item name="xTabMaxWidth">@dimen/design_tab_max_width</item>
         <item name="xTabIndicatorAnimationDuration">@integer/design_tab_indicator_anim_duration_ms
         </item>
-        <item name="xTabIndicatorColor">?attr/colorAccent</item>
+        <item name="xTabIndicatorColor">?attr/colorPrimary</item>
         <item name="xTabIndicatorGravity">bottom</item>
         <item name="xTabIndicatorAnimationMode">linear</item>
         <item name="xTabIndicator">@drawable/mtrl_tabs_default_indicator</item>
@@ -145,11 +145,12 @@
         <item name="xTabPaddingEnd">12dp</item>
         <item name="xTabTextAppearance">@style/TextAppearance.Design.XTab</item>
         <item name="xTabTextColor">@null</item>
-        <item name="xTabRippleColor">?attr/colorControlHighlight</item>
-        <item name="xTabUnboundedRipple">false</item>
+        <item name="xTabRippleColor">@color/mtrl_tabs_ripple_color</item>
+        <item name="xTabUnboundedRipple">true</item>
     </style>
 
-    <style name="Widget.Design.XTabLayout" parent="Base.Widget.Design.XTabLayout">
+    <style name="XTabLayout.Default" parent="XTabLayout">
+        <item name="android:background">#ffff0000</item>
         <item name="xTabGravity">fill</item>
         <item name="xTabMode">fixed</item>
         <item name="xTabIndicatorFullWidth">true</item>
