@@ -91,7 +91,6 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.badge.BadgeDrawable;
-import com.google.android.material.internal.ThemeEnforcement;
 import com.google.android.material.internal.ViewUtils;
 import com.google.android.material.resources.MaterialResources;
 import com.google.android.material.ripple.RippleUtils;
@@ -564,14 +563,15 @@ public class XTabLayout extends HorizontalScrollView {
                 new HorizontalScrollView.LayoutParams(
                         LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
 
-        TypedArray a =
-                ThemeEnforcement.obtainStyledAttributes(
-                        context,
-                        attrs,
-                        R.styleable.XTabLayout,
-                        defStyleAttr,
-                        DEF_STYLE_RES,
-                        R.styleable.XTabLayout_xTabTextAppearance);
+        //context.obtainStyledAttributes(attrs,  R.styleable.XTabLayout, defStyleAttr, DEF_STYLE_RES)
+        TypedArray a = context.obtainStyledAttributes(attrs,  R.styleable.XTabLayout, defStyleAttr, DEF_STYLE_RES);
+//                ThemeEnforcement.obtainStyledAttributes(
+//                        context,
+//                        attrs,
+//                        R.styleable.XTabLayout,
+//                        defStyleAttr,
+//                        DEF_STYLE_RES,
+//                        R.styleable.XTabLayout_xTabTextAppearance);
 
         if (getBackground() instanceof ColorDrawable) {
             ColorDrawable background = (ColorDrawable) getBackground();
