@@ -140,8 +140,8 @@
         <item name="xTabIndicatorGravity">bottom</item>
         <item name="xTabIndicatorAnimationMode">linear</item>
         <item name="xTabIndicator">@drawable/mtrl_tabs_default_indicator</item>
-        <item name="xTabPaddingStart">12dp</item>
-        <item name="xTabPaddingEnd">12dp</item>
+        <item name="xTabPaddingStart">1dp</item>
+        <item name="xTabPaddingEnd">1dp</item>
         <item name="xTabTextAppearance">@style/TextAppearance.Design.XTab</item>
         <item name="xTabTextColor">@null</item>
         <item name="xTabRippleColor">@color/mtrl_tabs_ripple_color</item>

@@ -478,7 +478,7 @@ public class XTabLayout extends HorizontalScrollView {
     android.graphics.PorterDuff.Mode tabIconTintMode;
     float tabTextSize;
     float tabSelectedTextSize = 0;
-    int tabTextMaxLines = 2;
+    int tabTextMaxLines = 1;
     float tabTextMultiLineSize;
     private Boolean tabTextBold;
     private Boolean tabTextSelectedBold;

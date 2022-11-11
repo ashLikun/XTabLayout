@@ -46,23 +46,21 @@
         android:id="@+id/tabLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ffffff"
         app:tabGravity="fill"
         app:tabIndicatorColor="@color/colorPrimary"
         app:tabIndicatorFullWidth="false"
         app:tabIndicatorHeight="2dp"
         app:tabMinWidth="50dp"
-        app:tabMode="auto"
+        app:tabMode="fixed"
         app:tabPadding="0dp"
         app:tabSelectedTextColor="@color/colorPrimary"
-        app:tabTextColor="#333333"
-        tools:ignore="SpeakableTextPresentCheck" />
+        app:tabTextColor="#333333" />
 
     <com.ashlikun.xtablayout.XTabLayout
         android:id="@+id/xtabLayout2"
         android:layout_width="match_parent"
-        android:background="#ffffff"
         android:layout_height="wrap_content"
+        app:xTabMode="auto"
         app:xTabIndicatorColor="@color/colorPrimary"
         app:xTabIndicatorWidthWidthText="true"
         app:xTabSelectedTextColor="@color/colorPrimary"

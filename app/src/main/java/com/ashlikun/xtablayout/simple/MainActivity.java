@@ -25,9 +25,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViewPager() {
         List<String> titles = new ArrayList<>();
-        titles.add("全部");
-        titles.add("待付款");
-        titles.add("待使用aa111");
+//        titles.add("Canner");
+        titles.add("Navigationsss");
+        titles.add("Status");
+        titles.add("Statistics");
+        titles.add("Trends");
 //        titles.add("待使用");
 //        titles.add("待使用");
 //        titles.add("待使用");
