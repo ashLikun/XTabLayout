@@ -212,9 +212,7 @@ public class XTabLayout extends HorizontalScrollView {
     private static final String LOG_TAG = "XTabLayout";
 
     /**
-     * Scrollable tabs display a subset of tabs at any given moment, and can contain longer tab labels
-     * and a larger number of tabs. They are best used for browsing contexts in touch interfaces when
-     * users don’t need to directly compare the tab labels.
+     * 可滚动选项卡在任何给定时刻显示选项卡的子集，并且可以包含更长的选项卡标签以及更大数量的选项卡。当用户不需要直接比较标签。
      *
      * @see #setTabMode(int)
      * @see #getTabMode()
@@ -222,9 +220,7 @@ public class XTabLayout extends HorizontalScrollView {
     public static final int MODE_SCROLLABLE = 0;
 
     /**
-     * Fixed tabs display all tabs concurrently and are best used with content that benefits from
-     * quick pivots between tabs. The maximum number of tabs is limited by the view’s width. Fixed
-     * tabs have equal width, based on the widest tab label.
+     * 固定选项卡同时显示所有选项卡，最好与受益于选项卡之间的快速枢轴。选项卡的最大数量受视图宽度的限制。固定的选项卡的宽度相等，基于最宽的选项卡标签。
      *
      * @see #setTabMode(int)
      * @see #getTabMode()
@@ -232,10 +228,10 @@ public class XTabLayout extends HorizontalScrollView {
     public static final int MODE_FIXED = 1;
 
     /**
-     * Auto-sizing tabs behave like MODE_FIXED with GRAVITY_CENTER while the tabs fit within the
-     * XTabLayout's content width. Fixed tabs have equal width, based on the widest tab label. Once the
-     * tabs outgrow the view's width, auto-sizing tabs behave like MODE_SCROLLABLE, allowing for a
-     * dynamic number of tabs without requiring additional layout logic.
+     * 自动调整选项卡大小的行为类似于带有GRAVITY_CENTER的MODE_FIXED，而选项卡适合
+     * XTabLayout的内容宽度。固定选项卡具有相同的宽度，基于最宽的选项卡标签。一旦
+     * 选项卡超出视图的宽度，自动调整选项卡大小的行为类似于MODE_SCROLLABLE，允许
+     * 动态数量的选项卡，而不需要额外的布局逻辑。
      *
      * @see #setTabMode(int)
      * @see #getTabMode()
@@ -252,16 +248,16 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * If a tab is instantiated with {@link Tab#setText(CharSequence)}, and this mode is set, the text
-     * will be saved and utilized for the content description, but no visible labels will be created.
+     * 如果使用{@link Tab#setText(CharSequence)}实例化选项卡，并且设置了此模式，则文本
+     * 将被保存并用于内容描述，但不会创建可见标签。
      *
      * @see Tab#setTabLabelVisibility(int)
      */
     public static final int TAB_LABEL_VISIBILITY_UNLABELED = 0;
 
     /**
-     * This mode is set by default. If a tab is instantiated with {@link Tab#setText(CharSequence)}, a
-     * visible label will be created.
+     * 此模式是默认设置的。如果选项卡是用{@link Tab#setText(CharSequence)}实例化的，则
+     * 将创建可见标签。
      *
      * @see Tab#setTabLabelVisibility(int)
      */
@@ -275,8 +271,8 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Gravity used to fill the {@link XTabLayout} as much as possible. This option only takes effect
-     * when used with {@link #MODE_FIXED} on non-landscape screens less than 600dp wide.
+     * 重力用于尽可能多地填充{@link XTabLayout}。此选项仅生效
+     * 当在宽度小于600dp的非横向屏幕上与{@link #MODE_FIXED}一起使用时。
      *
      * @see #setTabGravity(int)
      * @see #getTabGravity()
@@ -284,7 +280,7 @@ public class XTabLayout extends HorizontalScrollView {
     public static final int GRAVITY_FILL = 0;
 
     /**
-     * Gravity used to lay out the tabs in the center of the {@link XTabLayout}.
+     * 重力用于将选项卡布置在
      *
      * @see #setTabGravity(int)
      * @see #getTabGravity()
@@ -292,7 +288,7 @@ public class XTabLayout extends HorizontalScrollView {
     public static final int GRAVITY_CENTER = 1;
 
     /**
-     * Gravity used to lay out the tabs aligned to the start of the {@link XTabLayout}.
+     * 重力用于将选项卡排列为与 {@link XTabLayout}.
      *
      * @see #setTabGravity(int)
      * @see #getTabGravity()
@@ -429,31 +425,38 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Callback interface invoked when a tab's selection state changes.
+     * 选项卡的选择状态更改时调用的回调接口。
      */
     public interface OnTabSelectedListener<T extends Tab> {
         /**
-         * Called when a tab enters the selected state.
-         *
-         * @param tab The tab that was selected
+         * 当选项卡进入选定状态时调用。
          */
         public void onTabSelected(T tab);
 
         /**
-         * Called when a tab exits the selected state.
-         *
-         * @param tab The tab that was unselected
+         * 当选项卡退出选定状态时调用。
          */
         public void onTabUnselected(T tab);
 
         /**
-         * Called when a tab that is already selected is chosen again by the user. Some applications may
-         * use this action to return to the top level of a category.
-         *
-         * @param tab The tab that was reselected.
+         * 当用户再次选择已选择的选项卡时调用。某些应用程序可能
+         * 使用此操作可以返回到类别的顶级。
          */
         public void onTabReselected(T tab);
     }
+
+    /**
+     * 选项卡的选择状态更改时调用的回调接口。
+     */
+    public interface OnTabCanSelected<T extends Tab> {
+        /**
+         * 是否可以选择
+         *
+         * @return true:可以选择，false：不可以
+         */
+        public boolean canSelect(Tab tab);
+    }
+
 
     private final ArrayList<Tab> tabs = new ArrayList<>();
     @Nullable
@@ -518,12 +521,15 @@ public class XTabLayout extends HorizontalScrollView {
 
     private TabIndicatorInterpolator tabIndicatorInterpolator;
 
-    @Nullable
-    private OnTabSelectedListener selectedListener;
 
     private final ArrayList<OnTabSelectedListener> selectedListeners = new ArrayList<>();
+    final ArrayList<OnTabCanSelected> tabCanSelected = new ArrayList<>();
+
+    /**
+     * 适配ViewPager
+     */
     @Nullable
-    private OnTabSelectedListener currentVpSelectedListener;
+    public OnTabSelectedListener currentVpSelectedListener;
 
     private ValueAnimator scrollAnimator;
 
@@ -1922,16 +1928,23 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Selects the given tab. Will always animate to the selected tab if the current tab is
-     * reselected, regardless of the value of {@code updateIndicator}.
+     * 选择给定的选项卡。如果当前选项卡为
+     * 无论{@codeupdateIndicator}的值如何，都可以重新选择。
      *
-     * @param tab             The tab to select, or {@code null} to select none.
-     * @param updateIndicator Whether to animate to the selected tab.
+     * @param tab             要选择的选项卡，或｛@code null｝选择无。
+     * @param updateIndicator 是否为选定选项卡设置动画。
      * @see #selectTab(Tab)
      */
     public void selectTab(@Nullable final Tab tab, boolean updateIndicator) {
+        //拦截事件
+        boolean isCan = true;
+        for (int i = tabCanSelected.size() - 1; i >= 0; i--) {
+            if (!tabCanSelected.get(i).canSelect(tab)) {
+                isCan = false;
+            }
+        }
+        if (!isCan) return;
         final Tab currentTab = selectedTab;
-
         if (currentTab == tab) {
             if (currentTab != null) {
                 dispatchTabReselected(tab);
@@ -1951,8 +1964,8 @@ public class XTabLayout extends HorizontalScrollView {
                     setSelectedTabView(newPosition);
                 }
             }
-            // Setting selectedTab before dispatching 'tab unselected' events, so that currentTab's state
-            // will be interpreted as unselected
+            // 在调度“tab unselected”事件之前设置selectedTab，以便currentTab的状态
+            //将被解释为未选中
             selectedTab = tab;
             if (currentTab != null) {
                 dispatchTabUnselected(currentTab);
@@ -3583,8 +3596,8 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * A {@link XTabLayout.OnTabSelectedListener} class which contains the necessary calls back to the
-     * provided {@link ViewPager} so that the tab position is kept in sync.
+     * A {@link XTabLayout.OnTabSelectedListener} 类，该类包含对
+     * 提供了｛@link ViewPager｝，以便选项卡位置保持同步。
      */
     public static class ViewPagerOnTabSelectedListener implements XTabLayout.OnTabSelectedListener {
         private final ViewPager viewPager;
@@ -3593,6 +3606,7 @@ public class XTabLayout extends HorizontalScrollView {
             this.viewPager = viewPager;
         }
 
+
         @Override
         public void onTabSelected(@NonNull XTabLayout.Tab tab) {
             viewPager.setCurrentItem(tab.getPosition());
@@ -3600,12 +3614,10 @@ public class XTabLayout extends HorizontalScrollView {
 
         @Override
         public void onTabUnselected(XTabLayout.Tab tab) {
-            // No-op
         }
 
         @Override
         public void onTabReselected(XTabLayout.Tab tab) {
-            // No-op
         }
     }
 
