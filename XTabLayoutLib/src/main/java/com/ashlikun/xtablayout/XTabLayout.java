@@ -523,7 +523,7 @@ public class XTabLayout extends HorizontalScrollView {
 
 
     private final ArrayList<OnTabSelectedListener> selectedListeners = new ArrayList<>();
-    final ArrayList<OnTabCanSelected> tabCanSelected = new ArrayList<>();
+    private final ArrayList<OnTabCanSelected> tabCanSelected = new ArrayList<>();
 
     /**
      * 适配ViewPager
@@ -538,7 +538,7 @@ public class XTabLayout extends HorizontalScrollView {
     @Nullable
     private PagerAdapter pagerAdapter;
     private DataSetObserver pagerAdapterObserver;
-    private XTabLayoutOnPageChangeListener pageChangeListener;
+    public XTabLayoutOnPageChangeListener pageChangeListener;
     private AdapterChangeListener adapterChangeListener;
     private boolean setupViewPagerImplicitly;
 
@@ -781,6 +781,17 @@ public class XTabLayout extends HorizontalScrollView {
             boolean updateSelectedText,
             boolean updateIndicatorPosition) {
         final int roundedPosition = Math.round(position + positionOffset);
+        //拦截事件
+        if (tabCanSelected.size() > 0) {
+            Tab tab = getTabAt(position);
+            boolean isCan = true;
+            for (int i = tabCanSelected.size() - 1; i >= 0; i--) {
+                if (!tabCanSelected.get(i).canSelect(tab)) {
+                    isCan = false;
+                }
+            }
+            if (!isCan) return;
+        }
         if (roundedPosition < 0 || roundedPosition >= slidingTabIndicator.getChildCount()) {
             return;
         }
@@ -875,14 +886,12 @@ public class XTabLayout extends HorizontalScrollView {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        // When a touch event is intercepted and the tab mode is fixed, do not continue to process the
-        // touch event. This will prevent unexpected scrolling from occurring in corner cases (i.e. a
-        // layout in fixed mode that has padding should not scroll for the width of the padding).
+        // 当触摸事件被拦截并且选项卡模式被修复时，不要继续处理
+        //触摸事件。这将防止在角落情况下发生意外滚动（即
+        //具有填充的固定模式下的布局不应滚动填充的宽度）。
         return isScrollingEnabled() && super.onInterceptTouchEvent(event);
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getActionMasked() == MotionEvent.ACTION_SCROLL && !isScrollingEnabled()) {
             return false;
@@ -890,14 +899,6 @@ public class XTabLayout extends HorizontalScrollView {
         return super.onTouchEvent(event);
     }
 
-    /**
-     * Add a {@link XTabLayout.OnTabSelectedListener} that will be invoked when tab selection changes.
-     *
-     * <p>Components that add a listener should take care to remove it when finished via {@link
-     * #removeOnTabSelectedListener(OnTabSelectedListener)}.
-     *
-     * @param listener listener to add
-     */
     public void addOnTabSelectedListener(@NonNull OnTabSelectedListener listener) {
         if (!selectedListeners.contains(listener)) {
             selectedListeners.add(listener);
@@ -908,19 +909,28 @@ public class XTabLayout extends HorizontalScrollView {
         selectedListeners.remove(listener);
     }
 
-
-    /**
-     * Remove all previously added {@link XTabLayout.OnTabSelectedListener}s.
-     */
     public void clearOnTabSelectedListeners() {
         selectedListeners.clear();
     }
 
+    public void addOnTabCanSelected(@NonNull OnTabCanSelected listener) {
+        if (!tabCanSelected.contains(listener)) {
+            tabCanSelected.add(listener);
+        }
+    }
+
+    public void removeTabCanSelected(@NonNull OnTabCanSelected listener) {
+        tabCanSelected.remove(listener);
+    }
+
+    public void clearTabCanSelecteds() {
+        tabCanSelected.clear();
+    }
+
     /**
-     * Create and return a new {@link Tab}. You need to manually add this using {@link #addTab(Tab)}
-     * or a related method.
+     * 创建并返回一个新的{@link Tab}。您需要使用 {@link #addTab(Tab)} 手动添加此
+     * 或相关方法。
      *
-     * @return A new Tab
      * @see #addTab(Tab)
      */
     @NonNull
@@ -935,7 +945,7 @@ public class XTabLayout extends HorizontalScrollView {
         return tab;
     }
 
-    // TODO(b/76413401): remove this method and just create the final field after the widget migration
+    // TODO(b/76413401): 删除此方法，在小部件迁移后只创建最后一个字段
     protected Tab createTabFromPool() {
         Tab tab = tabPool.acquire();
         if (tab == null) {
@@ -944,22 +954,20 @@ public class XTabLayout extends HorizontalScrollView {
         return tab;
     }
 
-    // TODO(b/76413401): remove this method and just create the final field after the widget migration
+    // TODO(b/76413401): 删除此方法，在小部件迁移后只创建最后一个字段
     protected boolean releaseFromTabPool(Tab tab) {
         return tabPool.release(tab);
     }
 
     /**
-     * Returns the number of tabs currently registered with the action bar.
-     *
-     * @return Tab count
+     * 返回当前在操作栏中注册的选项卡数。
      */
     public int getTabCount() {
         return tabs.size();
     }
 
     /**
-     * Returns the tab at the specified index.
+     * 返回指定索引处的选项卡。
      */
     @Nullable
     public Tab getTabAt(int index) {
@@ -967,19 +975,17 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Returns the position of the current selected tab.
+     * 返回当前所选选项卡的位置。
      *
-     * @return selected tab position, or {@code -1} if there isn't a selected tab.
+     * @return 选定的选项卡位置，或者{@code -1}（如果没有选定的选项卡）。
      */
     public int getSelectedTabPosition() {
         return selectedTab != null ? selectedTab.getPosition() : -1;
     }
 
     /**
-     * Remove a tab from the layout. If the removed tab was selected it will be deselected and another
-     * tab will be selected if present.
-     *
-     * @param tab The tab to remove
+     * 从布局中删除选项卡。如果选择了删除的选项卡，它将被取消选择，另一个
+     * 选项卡将被选中（如果存在）。
      */
     public void removeTab(@NonNull Tab tab) {
         if (tab.parent != this) {
@@ -990,10 +996,8 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Remove a tab from the layout. If the removed tab was selected it will be deselected and another
-     * tab will be selected if present.
-     *
-     * @param position Position of the tab to remove
+     * 从布局中删除选项卡。如果选择了删除的选项卡，它将被取消选择，另一个
+     * 选项卡将被选中（如果存在）。
      */
     public void removeTabAt(int position) {
         final int selectedTabPosition = selectedTab != null ? selectedTab.getPosition() : 0;
@@ -1016,7 +1020,7 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Remove all tabs from the action bar and deselect the current tab.
+     * 从操作栏中删除所有选项卡，然后取消选择当前选项卡。
      */
     public void removeAllTabs() {
         // Remove all the views
@@ -1035,15 +1039,14 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Set the behavior mode for the Tabs in this layout. The valid input options are:
+     * 设置此布局中选项卡的行为模式。有效的输入选项包括：
      *
      * <ul>
-     *   <li>{@link #MODE_FIXED}: Fixed tabs display all tabs concurrently and are best used with
-     *       content that benefits from quick pivots between tabs.
-     *   <li>{@link #MODE_SCROLLABLE}: Scrollable tabs display a subset of tabs at any given moment,
-     *       and can contain longer tab labels and a larger number of tabs. They are best used for
-     *       browsing contexts in touch interfaces when users don’t need to directly compare the tab
-     *       labels. This mode is commonly used with a {@link androidx.viewpager.widget.ViewPager}.
+     *   <li>{@link #MODE_FIXED}: 固定选项卡同时显示所有选项卡，最好与一起使用,从选项卡之间的快速枢轴中获益的内容。
+     *   <li>{@link #MODE_SCROLLABLE}: 可滚动选项卡在任何给定时刻显示选项卡的子集，
+     * 并且可以包含更长的选项卡标签和更大数量的选项卡。它们最好用于
+     * 当用户不需要直接比较选项卡时，在触摸界面中浏览上下文
+     * 标签。此模式通常与 {@link androidx.viewpager.widget.ViewPager}.
      * </ul>
      *
      * @param mode one of {@link #MODE_FIXED} or {@link #MODE_SCROLLABLE}.
@@ -1057,7 +1060,7 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Returns the current mode used by this {@link XTabLayout}.
+     * 返回此使用的当前模式 {@link XTabLayout}.
      *
      * @see #setTabMode(int)
      */
@@ -1067,7 +1070,7 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Set the gravity to use when laying out the tabs.
+     * 设置放置选项卡时要使用的重力。
      *
      * @param gravity one of {@link #GRAVITY_CENTER} or {@link #GRAVITY_FILL}.
      * @attr ref com.google.android.material.R.styleable#XTabLayout_xTabGravity
@@ -1080,7 +1083,7 @@ public class XTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * The current gravity used for laying out tabs.
+     * 用于布置选项卡的当前重力。
      *
      * @return one of {@link #GRAVITY_CENTER} or {@link #GRAVITY_FILL}.
      */
